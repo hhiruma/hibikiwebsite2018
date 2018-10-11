@@ -25,8 +25,8 @@ export default {
 <style scoped>
 #MB_container {
     position: absolute;
-    display: flex;
     height: 55px;
+    width: 100%;
     padding: 9px 20px;
     box-sizing: border-box;
     background-color: rgba(0, 0, 0, 0.6);
