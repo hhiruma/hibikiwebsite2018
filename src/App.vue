@@ -45,6 +45,11 @@ export default {
   },
   created: function() {
     store.commit('addLoadTargets', this.pageContents)
+
+    window.addEventListener('resize', () => {
+      store.commit('setResizeVals', {mode: 'width', val: window.innerWidth})
+      store.commit('setResizeVals', {mode: 'height', val: window.innerHeight})
+    })
   },
   components: {
     'menu-bar': MenuBar,

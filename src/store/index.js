@@ -21,6 +21,10 @@ export default new Vuex.Store({
             isLoading: true,
             targets: [],
             targetsNum: 0
+        },
+        appSize: {
+            appWidth: -1,
+            appHeight: -1
         }
     },
     mutations: {
@@ -41,6 +45,13 @@ export default new Vuex.Store({
             state.load.targetsNum = 0
             console.log("reset targest")
             console.log(state.load.isLoading)
+        },
+        setResizeVals (state, payload){
+            if (payload.mode === "width"){
+                state.appSize.appWidth = payload.val
+            } else {
+                state.appSize.appHeight = payload.val
+            }
         }
     }
 })
