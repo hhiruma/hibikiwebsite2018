@@ -69,6 +69,16 @@ export default new Vuex.Store({
                     pageShow: Boolean(nextPage.slug)
                 }
             })
+        },
+        goToTop (state) {
+            state.currentPage = 'トップ'
+            router.push({
+                path: '/',
+                params: {
+                    pageTitle: 'トップ',
+                    pageShow: false
+                }
+            })
         }
     },
     getters: {

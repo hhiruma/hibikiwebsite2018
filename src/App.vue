@@ -46,6 +46,7 @@ export default {
     },
   },
   created: function() {
+    store.commit('goToTop')
     store.commit('addLoadTargets', this.pageContents)
 
     window.addEventListener('resize', () => {
