@@ -19,6 +19,15 @@ export default {
   methods: {
     changePage(title) {
       this.$store.commit('setCurrentPage', title)
+
+      const nextPage = this.$store.state.pageContents.filter((el) => el.title === title)[0]
+      this.$router.push({
+        path: nextPage.slug ? nextPage.slug : '/',
+        params: {
+          pageTitle: title,
+          pageShow: Boolean(nextPage.slug)
+        }
+      })
     }
   }
 }

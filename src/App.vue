@@ -1,7 +1,7 @@
 <template>
   <div id="app" :style="{ 'background-image': 'url('+img_src+')'}">
     <menu-bar v-if="!loading"/>
-    <router-view/>
+    <router-view v-if="!loading"/>
     <loading-cover v-if="loading"/>
   </div>
 </template>
@@ -10,11 +10,13 @@
 import { mapState } from 'vuex'
 import MenuBar from '@/components/MenuBar'
 import store from '@/store'
+import router from '@/router'
 import LoadingCover from '@/components/LoadingCover'
 
 export default {
   name: 'App',
   store,
+  router,
   data() {
     return {
       img_src: require('@/img/bg.jpg'),

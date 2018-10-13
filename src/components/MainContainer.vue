@@ -1,17 +1,19 @@
 <template>
-  <div id="MC_container" :class="{MC_container_show: showContent, MC_container_hidden: !showContent}"></div>
+  <div id="MC_container" :class="{MC_container_show: pageShow, MC_container_hidden: !pageShow}">
+    page contents here
+  </div>
 </template>
 
 <script>
-import store from '@/store'
+import { mapGetters } from 'vuex'
 
 export default {
-  name: 'Base',
-  data () {
-    return {
-      showContent: store.state.showContent
-    }
-  }
+  name: 'MainContainer',
+  props: ['pageTitle'],
+  computed: mapGetters({
+    content: 'currentPageContent',
+    pageShow: 'currentPageIfShow'
+  })
 }
 </script>
 

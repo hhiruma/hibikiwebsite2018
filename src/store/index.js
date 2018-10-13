@@ -53,5 +53,13 @@ export default new Vuex.Store({
                 state.appSize.appHeight = payload.val
             }
         }
+    },
+    getters: {
+        currentPageContent (state) {
+            return state.pageContents.filter(el => el.title === state.currentPage)
+        },
+        currentPageIfShow (state) {
+            return Boolean(state.pageContents.filter(el => el.title === state.currentPage)[0].slug !== '')
+        }
     }
 })

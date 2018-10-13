@@ -6,10 +6,10 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
-    // {
-    //   path: '/',
-    //   name: 'MainContainer',
-    //   component: MainContainer
-    // }
+    {
+      path: '/:pageTitle',
+      name: 'MainContainer',
+      component: MainContainer
+    }
   ]
 })
