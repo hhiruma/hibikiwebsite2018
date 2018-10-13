@@ -1,6 +1,7 @@
 import firestore from '@/firestore'
 import Vue from 'vue'
 import Vuex from 'vuex'
+import router from '@/router'
 
 Vue.use(Vuex)
 
@@ -52,6 +53,22 @@ export default new Vuex.Store({
             } else {
                 state.appSize.appHeight = payload.val
             }
+        },
+        changePage (state, title) {
+            if (title === "") {
+                console.error('Not a valid title')
+                return
+            }
+            state.currentPage = title
+
+            const nextPage = state.pageContents.filter((el) => el.title === title)[0]
+            router.push({
+                path: nextPage.slug ? nextPage.slug : '/',
+                params: {
+                    pageTitle: title,
+                    pageShow: Boolean(nextPage.slug)
+                }
+            })
         }
     },
     getters: {
