@@ -11,7 +11,7 @@ export default new Vuex.Store({
         currentPage: "トップ",
         pageContents: (()=>{
             let tmp = []
-            firestore.collection("pageContents").orderBy("order").get().then((querySnapshot)=>{
+            firestore.collection("Settings").doc("Pages").collection("MainContentPages").orderBy("order").get().then((querySnapshot)=>{
                 querySnapshot.forEach((doc)=>{
                     tmp.push(doc.data())
                 })
