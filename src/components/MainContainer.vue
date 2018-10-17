@@ -32,8 +32,8 @@ export default {
 
 .MC_container_show {
     top: 15%;
-    left: 10%;
-    width: 80%;
+    left: 3%;
+    width: 94%;
     opacity: 1.0;
 }
 
