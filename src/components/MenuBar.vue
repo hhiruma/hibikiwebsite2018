@@ -1,6 +1,6 @@
 <template>
   <div id="MB_container">
-    <menu-bar-element v-for="title in pageTitleList" :title="title" :key="title"/>
+    <menu-bar-element v-for="page in pageList" :pageData="page" :key="page.slug"/>
   </div>
 </template>
 
@@ -13,7 +13,7 @@ export default {
   data () {
     return {
       currentPage: this.$store.state.currentPage,
-      pageTitleList: this.$store.state.pageSettings.map((el)=> {return el.title}),
+      pageList: this.$store.state.pageSettings
     }
   },
   components: {

@@ -1,24 +1,24 @@
 <template>
-  <div v-if="title === currentPage" class="MB_element hvr-underline-from-left">
-      {{ title }}
+  <div v-if="pageData.slug === currentPageSlug" class="MB_element hvr-underline-from-left">
+      {{ pageData.title }}
   </div>
-  <div v-else class="MB_element hvr-underline-from-center" @click="changePage(title)">
-      {{ title }}
+  <div v-else class="MB_element hvr-underline-from-center" @click="changePage(pageData.slug)">
+      {{ pageData.title }}
   </div>
 </template>
 
 <script>
 export default {
   name: 'MenuBarElement',
-  props: ['title'],
+  props: ['pageData'],
   computed: {
-    currentPage() {
-      return this.$store.state.currentPage
+    currentPageSlug() {
+      return this.$store.state.currentPageSlug
     }
   },
   methods: {
-    changePage(title) {
-      this.$store.commit('changePage', title)
+    changePage(slug) {
+      this.$store.commit('changePage', slug)
     }
   }
 }

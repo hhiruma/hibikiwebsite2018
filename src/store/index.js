@@ -8,7 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         showContent: false,
-        currentPage: "トップ",
+        currentPageSlug: "",
         pageSettings: (()=>{
             let tmp = []
             firestore.collection("Settings/Pages/MainContentPages").orderBy("order").get().then((querySnapshot)=>{
@@ -29,13 +29,6 @@ export default new Vuex.Store({
         }
     },
     mutations: {
-        setCurrentPage (state, title){
-            if (title === "") {
-                console.error('Not a valid title')
-                return
-            }
-            state.currentPage = title
-        },
         addLoadTargets (state, target) {
             state.load.targets.push(target)
             state.load.targetsNum++
@@ -44,8 +37,6 @@ export default new Vuex.Store({
         resetTargets (state){
             state.load.isLoading = false
             state.load.targetsNum = 0
-            console.log("reset targest")
-            console.log(state.load.isLoading)
         },
         setResizeVals (state, payload){
             if (payload.mode === "width"){
@@ -54,24 +45,20 @@ export default new Vuex.Store({
                 state.appSize.appHeight = payload.val
             }
         },
-        changePage (state, title) {
-            if (title === "") {
-                console.error('Not a valid title')
-                return
-            }
-            state.currentPage = title
+        changePage (state, slug) {
+            state.currentPageSlug = slug
 
-            const nextPage = state.pageSettings.filter((el) => el.title === title)[0]
+            const nextPage = state.pageSettings.filter((el) => el.slug === slug)[0]
             router.push({
                 path: nextPage.slug ? nextPage.slug : '/',
                 params: {
-                    pageTitle: title,
+                    pageTitle: nextPage.title,
                     pageShow: Boolean(nextPage.slug)
                 }
             })
         },
         goToTop (state) {
-            state.currentPage = 'トップ'
+            state.currentPageSlug = ''
             router.push({
                 path: '/',
                 params: {
@@ -83,10 +70,10 @@ export default new Vuex.Store({
     },
     getters: {
         currentPageContent (state) {
-            return state.pageSettings.filter(el => el.title === state.currentPage)
+            return state.pageSettings.filter(el => el.slug === state.currentPageSlug)
         },
         currentPageIfShow (state) {
-            return Boolean(state.pageSettings.filter(el => el.title === state.currentPage)[0].slug !== '')
+            return state.pageSettings.filter(el => el.slug === state.currentPageSlug)[0] !== ''
         }
     }
 })
