@@ -1,6 +1,6 @@
 <template>
   <div id="MC_container" :class="{MC_container_show: pageShow, MC_container_hidden: !pageShow}">
-    <about-us/>
+    <component :is="$route.params.pageSlug"/>
   </div>
 </template>
 
@@ -10,7 +10,6 @@ import AboutUsPage from '@/components/MainContents/AboutUsPage'
 
 export default {
   name: 'MainContainer',
-  props: ['pageTitle'],
   computed: mapGetters({
     content: 'currentPageContent',
     pageShow: 'currentPageIfShow'

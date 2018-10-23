@@ -7,7 +7,7 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/:pageTitle',
+      path: '/:pageSlug',
       name: 'MainContainer',
       component: MainContainer
     }

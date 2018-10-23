@@ -52,7 +52,7 @@ export default new Vuex.Store({
             router.push({
                 path: nextPage.slug ? nextPage.slug : '/',
                 params: {
-                    pageTitle: nextPage.title,
+                    pageSlug: nextPage.slug,
                     pageShow: Boolean(nextPage.slug)
                 }
             })
@@ -62,7 +62,7 @@ export default new Vuex.Store({
             router.push({
                 path: '/',
                 params: {
-                    pageTitle: 'トップ',
+                    pageSlug: '',
                     pageShow: false
                 }
             })
