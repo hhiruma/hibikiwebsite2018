@@ -25,7 +25,7 @@ export default {
   computed: mapState({
     loading: state => state.load.isLoading,
     targets: state => state.load.targets,
-    pageContents: 'pageContents'
+    pageSettings: 'pageSettings'
   }),
   watch: {
     targets: function() {
@@ -47,7 +47,7 @@ export default {
   },
   created: function() {
     store.commit('goToTop')
-    store.commit('addLoadTargets', this.pageContents)
+    store.commit('addLoadTargets', this.pageSettings)
 
     window.addEventListener('resize', () => {
       store.commit('setResizeVals', {mode: 'width', val: window.innerWidth})

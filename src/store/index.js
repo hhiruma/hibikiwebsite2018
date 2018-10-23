@@ -9,7 +9,7 @@ export default new Vuex.Store({
     state: {
         showContent: false,
         currentPage: "トップ",
-        pageContents: (()=>{
+        pageSettings: (()=>{
             let tmp = []
             firestore.collection("Settings").doc("Pages").collection("MainContentPages").orderBy("order").get().then((querySnapshot)=>{
                 querySnapshot.forEach((doc)=>{
@@ -61,7 +61,7 @@ export default new Vuex.Store({
             }
             state.currentPage = title
 
-            const nextPage = state.pageContents.filter((el) => el.title === title)[0]
+            const nextPage = state.pageSettings.filter((el) => el.title === title)[0]
             router.push({
                 path: nextPage.slug ? nextPage.slug : '/',
                 params: {
@@ -83,10 +83,10 @@ export default new Vuex.Store({
     },
     getters: {
         currentPageContent (state) {
-            return state.pageContents.filter(el => el.title === state.currentPage)
+            return state.pageSettings.filter(el => el.title === state.currentPage)
         },
         currentPageIfShow (state) {
-            return Boolean(state.pageContents.filter(el => el.title === state.currentPage)[0].slug !== '')
+            return Boolean(state.pageSettings.filter(el => el.title === state.currentPage)[0].slug !== '')
         }
     }
 })

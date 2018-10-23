@@ -13,7 +13,7 @@ export default {
   data () {
     return {
       currentPage: this.$store.state.currentPage,
-      pageTitleList: this.$store.state.pageContents.map((el)=> {return el.title}),
+      pageTitleList: this.$store.state.pageSettings.map((el)=> {return el.title}),
     }
   },
   components: {

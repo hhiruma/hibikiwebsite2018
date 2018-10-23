@@ -1,11 +1,12 @@
 <template>
   <div id="MC_container" :class="{MC_container_show: pageShow, MC_container_hidden: !pageShow}">
-    page contents here
+    <about-us/>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import AboutUsPage from '@/components/MainContents/AboutUsPage'
 
 export default {
   name: 'MainContainer',
@@ -13,7 +14,10 @@ export default {
   computed: mapGetters({
     content: 'currentPageContent',
     pageShow: 'currentPageIfShow'
-  })
+  }),
+  components: {
+    'about-us': AboutUsPage
+  }
 }
 </script>
 
