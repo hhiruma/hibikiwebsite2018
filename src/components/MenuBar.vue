@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import firestore from '@/firestore'
+import firestore from '@/firebase_firestore'
 import MenuBarElement from '@/components/MenuBarElement'
 
 export default {

@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import firestore from '@/firestore'
+import firestore from '@/firebase_firestore'
 import { mapState } from 'vuex'
 
 export default {

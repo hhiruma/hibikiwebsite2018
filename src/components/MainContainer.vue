@@ -7,6 +7,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import AboutUsPage from '@/components/MainContents/AboutUsPage'
+import StagesPage from '@/components/MainContents/StagesPage'
 
 export default {
   name: 'MainContainer',
@@ -15,7 +16,8 @@ export default {
     pageShow: 'currentPageIfShow'
   }),
   components: {
-    'about-us': AboutUsPage
+    'about-us': AboutUsPage,
+    'stages': StagesPage
   }
 }
 </script>

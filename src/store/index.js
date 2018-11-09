@@ -1,4 +1,4 @@
-import firestore from '@/firestore'
+import firestore from '@/firebase_firestore'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import router from '@/router'
