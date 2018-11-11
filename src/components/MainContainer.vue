@@ -8,6 +8,7 @@
 import { mapGetters } from 'vuex'
 import AboutUsPage from '@/components/MainContents/AboutUsPage'
 import StagesPage from '@/components/MainContents/StagesPage'
+import ContactsPage from '@/components/MainContents/ContactsPage.vue'
 
 export default {
   name: 'MainContainer',
@@ -17,7 +18,8 @@ export default {
   }),
   components: {
     'about-us': AboutUsPage,
-    'stages': StagesPage
+    'stages': StagesPage,
+    'contact': ContactsPage
   }
 }
 </script>
