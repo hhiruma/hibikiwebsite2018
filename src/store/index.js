@@ -18,6 +18,9 @@ export default new Vuex.Store({
             })
             return tmp
         })(),
+        masterUserAddress: (async () => {
+            return (await firestore.doc('Settings/Users').get()).data().MasterUserAddress
+        })(),
         load: {
             isLoading: true,
             targets: [],
@@ -57,12 +60,25 @@ export default new Vuex.Store({
                 }
             })
         },
+        toggleMasterMode (state) {
+            state.isMasterUser = true
+        },
         goToTop (state) {
             state.currentPageSlug = ''
             router.push({
                 path: '/',
                 params: {
                     pageSlug: '',
+                    pageShow: false
+                }
+            })
+        },
+        goToLogin (state) {
+            state.currentPageSlug = 'login'
+            router.push({
+                path: '/login',
+                params: {
+                    pageSlug: 'login',
                     pageShow: false
                 }
             })
@@ -74,6 +90,9 @@ export default new Vuex.Store({
         },
         currentPageIfShow (state) {
             return state.pageSettings.filter(el => el.slug === state.currentPageSlug)[0] !== ''
+        },
+        isMasterUser: (state) => (currentUser) => {
+            return state.masterUserAddress === currentUser
         }
     }
 })

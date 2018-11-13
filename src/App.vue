@@ -25,7 +25,8 @@ export default {
   computed: mapState({
     loading: state => state.load.isLoading,
     targets: state => state.load.targets,
-    pageSettings: 'pageSettings'
+    pageSettings: 'pageSettings',
+    masterUserAddress: 'masterUserAddress'
   }),
   watch: {
     targets: function() {
@@ -46,8 +47,12 @@ export default {
     },
   },
   created: function() {
+    if(this.$route.params === 'login'){
+      store.commit('goToLogin')
+    }
     store.commit('goToTop')
     store.commit('addLoadTargets', this.pageSettings)
+    store.commit('addLoadTargets', this.masterUserAddress)
 
     window.addEventListener('resize', () => {
       store.commit('setResizeVals', {mode: 'width', val: window.innerWidth})
