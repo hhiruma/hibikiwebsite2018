@@ -1,17 +1,17 @@
 <template>
   <div id="app" :style="{ 'background-image': 'url('+img_src+')'}">
-    <menu-bar v-if="!loading"/>
-    <router-view v-if="!loading"/>
-    <loading-cover v-if="loading"/>
+    <menu-bar v-if="!loader.isLoading"/>
+    <router-view v-if="!loader.isLoading"/>
+    <loading-cover v-if="loader.isLoading"/>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import MenuBar from '@/components/MenuBar'
 import store from '@/store'
 import router from '@/router'
 import LoadingCover from '@/components/LoadingCover'
+import { contentsLoader } from '@/utils'
 
 export default {
   name: 'App',
@@ -20,34 +20,39 @@ export default {
   data() {
     return {
       img_src: require('@/img/bg.jpg'),
+      loader: {
+        isLoading: true,
+        targetParams: [],
+      },
+      output: {} //expect 'pageSettings'
     }
   },
-  computed: mapState({
-    loading: state => state.load.isLoading,
-    targets: state => state.load.targets,
-    pageSettings: 'pageSettings'
-  }),
   watch: {
-    targets: function() {
-      if(!this.loading){
-        return
+    output(val){
+      if ('pageSettings' in val) {
+        store.commit('addToGlobalContents', {
+          name: 'pageSettings',
+          content: val.pageSettings
+        })
       }
-
-      while(this.targets.length !== 0){
-        const targetIsArray = Array.isArray(this.targets[0])
-        if ((!targetIsArray && this.targets[0] !== null) || (targetIsArray && this.targets[0].length > 0)){
-          this.targets.shift()
-        } else {
-          return
+    }
+  },
+  async created() {
+    store.commit('goToTop')
+    contentsLoader.addLoadTarget(this.loader, {
+      name: 'pageSettings',
+      type: 'firestore',
+      whichPath: 'collection',
+      path: 'Settings/Pages/MainContentPages',
+      options: {
+        order: {
+          field: 'order',
+          direction: 'asc'
         }
       }
+    })
 
-      store.commit('resetTargets')
-    },
-  },
-  created: function() {
-    store.commit('goToTop')
-    store.commit('addLoadTargets', this.pageSettings)
+    this.output = await contentsLoader.startLoading(this.loader)
 
     window.addEventListener('resize', () => {
       store.commit('setResizeVals', {mode: 'width', val: window.innerWidth})
