@@ -1,14 +1,14 @@
 <template>
   <div id="AboutUsContainer">
-    <div v-if="pageLoaded">
+    <div v-if="!loader.isLoading">
       <div id="AboutUsDescContainer">
         <div id="AboutUsDescMenu">
-          <div class="AboutUsDescMenuEl" v-for="pageContent in pageContents" :key="pageContent.order" @click="changeMenu(pageContent.order)">
+          <div class="AboutUsDescMenuEl" v-for="pageContent in output.pageContents" :key="pageContent.order" @click="changeMenu(pageContent.order)">
             {{ pageContent.title }}
           </div>
         </div>
         <div id="AboutUsDesc">
-          {{ pageContents.filter(el => el.order === selectedMenuOrder)[0].content }}
+          {{ output.pageContents.filter(el => el.order === selectedMenuOrder)[0].content }}
         </div>
       </div>
     </div>
@@ -17,42 +17,29 @@
 
 <script>
 import firestore from '@/firebase_firestore'
-import { mapState } from 'vuex'
+import { contentsLoader, loaderPresets } from '@/utils'
 
 export default {
   name: 'AboutUsPage',
   data() {
     return {
-      pageContents: [],
-      pageContentsLen: 0,
-      pageLoaded: false,
-      selectedMenuOrder: ''
+      selectedMenuOrder: 0,
+      loader: {
+        isLoading: true,
+        targetParams: [],
+      },
+      output: {} //expect 'pageContents'
     }
   },
   methods: {
     changeMenu(order) {
-      this.selectedMenuOrder = this.pageContents.filter(el => el.order === order)[0].order
+      this.selectedMenuOrder = this.output.pageContents.filter(el => el.order === order)[0].order
     }
   },
-  watch: {
-    pageContentsLen(val) {
-      if (val !== 0) {
-        if (val === this.pageContents.length) {
-          this.selectedMenuOrder = 0
-          this.pageLoaded = true
-        }
-      }
-    }
-  },
-  created: function() {
-    firestore.collection('Contents/AboutUs/Descriptions').orderBy('order').get().then((querySnapshot)=>{
-        querySnapshot.forEach((doc)=>{
-            this.pageContents.push(doc.data())
-        })
-    })
-    firestore.doc('Contents/AboutUs').get().then(doc => {
-      this.pageContentsLen = doc.data().DescriptionsNum
-    })
+  async created() {
+    contentsLoader.addLoadTarget(this.loader, loaderPresets.aboutUsContents)
+
+    this.output = await contentsLoader.startLoading(this.loader)
   }
 }
 </script>

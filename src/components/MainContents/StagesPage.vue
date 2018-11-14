@@ -1,17 +1,17 @@
 <template>
   <div id="StagesContainer">
-    <template v-if="pageLoaded">
+    <template v-if="!loader.isLoading">
       <div id="StagesMenuContainer">
         <div class="StageMenu" @click="moveToPage(0)">
           トップ
         </div>
-        <div class="StageMenu" v-for="yearGroup in yearGroups" :key="yearGroup" @click="moveToPage(constVal.MENU, Number(yearGroup))">
+        <div class="StageMenu" v-for="yearGroup in output.yearGroups" :key="yearGroup" @click="moveToPage(constVal.MENU, Number(yearGroup))">
           {{ yearGroup }}
         </div>
       </div>
       <div id="StagesMenuContent">
         <template v-if="pagePos === constVal.TOP">
-          {{ stagesTopDescription }}
+          {{ output.stagesDetails.stagesMenuDescription }}
         </template>
         <template v-else-if="pagePos === constVal.MENU">
           <div class="StagesMenuEl" v-for="content in contentSelectedYear" :key="content.postId"
@@ -71,16 +71,12 @@
 import firestore from '@/firebase_firestore'
 import storage from '@/firebase_storage'
 import { mapState } from 'vuex'
+import { contentsLoader, loaderPresets } from '@/utils'
 
 export default {
   name: 'StagesPage',
   data() {
     return {
-      pageContents: [],
-      stagesTopDescription: "",
-      postsNum: -1,
-      pageLoaded: false,
-      yearGroups: [],
       selectedYear: 0,
       pagePos: 0,
       selectedPost: {},
@@ -92,12 +88,17 @@ export default {
         TOP: 0,
         MENU: 1,
         CONTENT: 2
-      }
+      },
+      loader: {
+        isLoading: true,
+        targetParams: [],
+      },
+      output: {} //expect 'stageDetails', 'pageContents', 'yearGroups'
     }
   },
   computed: {
     contentSelectedYear() {
-      return this.pageContents.filter(el => el.yearGroup === this.selectedYear)
+      return this.output.pageContents.filter(el => el.yearGroup === this.selectedYear)
     },
     formatDate() {
       const rawDate = Number(this.selectedPost.stageDate.seconds) * 1000
@@ -130,7 +131,7 @@ export default {
         }
         this.selectedPost = {}
       } else if (pos === this.constVal.CONTENT) {
-        this.selectedPost = this.pageContents.filter(el => el.postId === param)[0]
+        this.selectedPost = this.output.pageContents.filter(el => el.postId === param)[0]
         if (this.selectedPost === null){
           moveToPage(this.constVal.MENU, -1)
         }
@@ -148,26 +149,11 @@ export default {
       this.selectedMedia.path = path
     }
   },
-  watch: {
-    pageContents(val) {
-      if (val.length === this.postsNum){
-        this.pageLoaded = true
-      }
+  async created() {
+    contentsLoader.addLoadTarget(this.loader, loaderPresets.stageDetails)
+    contentsLoader.addLoadTarget(this.loader, loaderPresets.stagesContents)
 
-      //set values using pageContents
-      this.yearGroups = Array.from(new Set(this.pageContents.map(el => el.yearGroup)))
-    }
-  },
-  created: function() {
-    firestore.doc('Contents/Stages').get().then(doc => {
-      this.stagesTopDescription = doc.data().stagesMenuDescription
-      this.postsNum = doc.data().postsNum
-    })
-    firestore.collection('Contents/Stages/Posts').orderBy('stageDate', 'desc').get().then((querySnapshot)=>{
-        querySnapshot.forEach((doc)=>{
-            this.pageContents.push(doc.data())
-        })
-    })
+    this.output = await contentsLoader.startLoading(this.loader)
   }
 }
 </script>

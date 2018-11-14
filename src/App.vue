@@ -1,17 +1,17 @@
 <template>
   <div id="app" :style="{ 'background-image': 'url('+img_src+')'}">
-    <menu-bar v-if="!loading"/>
-    <router-view v-if="!loading"/>
-    <loading-cover v-if="loading"/>
+    <menu-bar v-if="!loader.isLoading"/>
+    <router-view v-if="!loader.isLoading"/>
+    <loading-cover v-if="loader.isLoading"/>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import MenuBar from '@/components/MenuBar'
 import store from '@/store'
 import router from '@/router'
 import LoadingCover from '@/components/LoadingCover'
+import { contentsLoader, loaderPresets } from '@/utils'
 
 export default {
   name: 'App',
@@ -20,39 +20,28 @@ export default {
   data() {
     return {
       img_src: require('@/img/bg.jpg'),
+      loader: {
+        isLoading: true,
+        targetParams: [],
+      },
+      output: {} //expect 'pageSettings'
     }
   },
-  computed: mapState({
-    loading: state => state.load.isLoading,
-    targets: state => state.load.targets,
-    pageSettings: 'pageSettings',
-    masterUserAddress: 'masterUserAddress'
-  }),
   watch: {
-    targets: function() {
-      if(!this.loading){
-        return
+    output(val){
+      if ('pageSettings' in val) {
+        store.commit('addToGlobalContents', {
+          name: 'pageSettings',
+          content: val.pageSettings
+        })
       }
-
-      while(this.targets.length !== 0){
-        const targetIsArray = Array.isArray(this.targets[0])
-        if ((!targetIsArray && this.targets[0] !== null) || (targetIsArray && this.targets[0].length > 0)){
-          this.targets.shift()
-        } else {
-          return
-        }
-      }
-
-      store.commit('resetTargets')
-    },
-  },
-  created: function() {
-    if(this.$route.params === 'login'){
-      store.commit('goToLogin')
     }
+  },
+  async created() {
     store.commit('goToTop')
-    store.commit('addLoadTargets', this.pageSettings)
-    store.commit('addLoadTargets', this.masterUserAddress)
+    contentsLoader.addLoadTarget(this.loader, loaderPresets.pageSettings)
+
+    this.output = await contentsLoader.startLoading(this.loader)
 
     window.addEventListener('resize', () => {
       store.commit('setResizeVals', {mode: 'width', val: window.innerWidth})
