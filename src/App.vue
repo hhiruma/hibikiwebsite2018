@@ -11,7 +11,7 @@ import MenuBar from '@/components/MenuBar'
 import store from '@/store'
 import router from '@/router'
 import LoadingCover from '@/components/LoadingCover'
-import { contentsLoader } from '@/utils'
+import { contentsLoader, loaderPresets } from '@/utils'
 
 export default {
   name: 'App',
@@ -39,18 +39,7 @@ export default {
   },
   async created() {
     store.commit('goToTop')
-    contentsLoader.addLoadTarget(this.loader, {
-      name: 'pageSettings',
-      type: 'firestore',
-      whichPath: 'collection',
-      path: 'Settings/Pages/MainContentPages',
-      options: {
-        order: {
-          field: 'order',
-          direction: 'asc'
-        }
-      }
-    })
+    contentsLoader.addLoadTarget(this.loader, loaderPresets.pageSettings)
 
     this.output = await contentsLoader.startLoading(this.loader)
 

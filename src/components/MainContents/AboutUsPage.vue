@@ -17,7 +17,7 @@
 
 <script>
 import firestore from '@/firebase_firestore'
-import { contentsLoader } from '@/utils'
+import { contentsLoader, loaderPresets } from '@/utils'
 
 export default {
   name: 'AboutUsPage',
@@ -37,18 +37,7 @@ export default {
     }
   },
   async created() {
-    contentsLoader.addLoadTarget(this.loader, {
-      name: 'pageContents',
-      type: 'firestore',
-      whichPath: 'collection',
-      path: 'Contents/AboutUs/Descriptions',
-      options: {
-        order: {
-          field: 'order',
-          direction: 'asc'
-        }
-      }
-    })
+    contentsLoader.addLoadTarget(this.loader, loaderPresets.aboutUsContents)
 
     this.output = await contentsLoader.startLoading(this.loader)
   }

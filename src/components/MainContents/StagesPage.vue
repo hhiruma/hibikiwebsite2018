@@ -71,7 +71,7 @@
 import firestore from '@/firebase_firestore'
 import storage from '@/firebase_storage'
 import { mapState } from 'vuex'
-import { contentsLoader } from '@/utils'
+import { contentsLoader, loaderPresets } from '@/utils'
 
 export default {
   name: 'StagesPage',
@@ -150,30 +150,8 @@ export default {
     }
   },
   async created() {
-    contentsLoader.addLoadTarget(this.loader, {
-      name: 'stagesDetails',
-      type: 'firestore',
-      whichPath: 'field',
-      path: 'Contents/Stages',
-      fields: ['stagesMenuDescription']
-    })
-    contentsLoader.addLoadTarget(this.loader, {
-      name: 'pageContents',
-      type: 'firestore',
-      whichPath: 'collection',
-      path: 'Contents/Stages/Posts',
-      fields: [],
-      callback: (function (outputObj) {
-        outputObj.yearGroups = Array.from(new Set(outputObj.pageContents.map(el => el.yearGroup)))
-        return outputObj
-      }),
-      options: {
-        order: {
-          field: 'stageDate',
-          direction: 'desc'
-        }
-      }
-    })
+    contentsLoader.addLoadTarget(this.loader, loaderPresets.stageDetails)
+    contentsLoader.addLoadTarget(this.loader, loaderPresets.stagesContents)
 
     this.output = await contentsLoader.startLoading(this.loader)
   }
