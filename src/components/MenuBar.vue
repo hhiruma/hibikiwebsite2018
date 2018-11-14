@@ -6,16 +6,14 @@
 
 <script>
 import firestore from '@/firebase_firestore'
+import { mapState } from 'vuex'
 import MenuBarElement from '@/components/MenuBarElement'
 
 export default {
   name: 'MenuBar',
-  data () {
-    return {
-      currentPage: this.$store.state.currentPage,
-      pageList: this.$store.state.pageSettings
-    }
-  },
+  computed: mapState({
+    pageList: state => state.globalContents.pageSettings
+  }),
   components: {
     'menu-bar-element': MenuBarElement
   }

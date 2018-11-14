@@ -13,7 +13,6 @@ import ContactsPage from '@/components/MainContents/ContactsPage.vue'
 export default {
   name: 'MainContainer',
   computed: mapGetters({
-    content: 'currentPageContent',
     pageShow: 'currentPageIfShow'
   }),
   components: {

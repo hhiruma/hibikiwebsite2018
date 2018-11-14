@@ -51,7 +51,7 @@
 import { mapGetters } from 'vuex'
 
 import firestore from '@/firebase_firestore'
-import sendMail from '@/functions'
+// import sendMail from '@/functions'
 
 export default {
   name: 'ContactsPage',
