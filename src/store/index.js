@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import router from '@/router'
+import firebase from 'firebase'
 
 Vue.use(Vuex)
 
@@ -9,9 +10,7 @@ export default new Vuex.Store({
         showContent: false,
         currentPageSlug: "",
         currentPageIfShow: false,
-        globalContents: {
-            pageSettings: {}
-        },
+        globalContents: {},  //expects 'pageSettings', 'masterUserId'
         appSize: {
             appWidth: -1,
             appHeight: -1
@@ -37,9 +36,6 @@ export default new Vuex.Store({
                 }
             })
         },
-        toggleMasterMode (state) {
-            state.isMasterUser = true
-        },
         goToTop (state) {
             state.currentPageSlug = ''
             router.push({
@@ -61,18 +57,22 @@ export default new Vuex.Store({
             })
         },
         addToGlobalContents (state, payload) {
-            state.globalContents[payload.name] = payload.content
+            Vue.set(state.globalContents, payload.name, payload.content)
+        },
+        setCurrentUserId (state) {
+            state.globalContents.currentUserId = firebase.auth().currentUser.uid
         }
     },
     getters: {
-        currentPageContent (state) {
-            return state.globalContents.pageSettings.filter(el => el.slug === state.currentPageSlug)
-        },
         currentPageIfShow (state) {
-            return state.globalContents.pageSettings.filter(el => el.slug === state.currentPageSlug)[0] !== ''
+            if (state.globalContents.pageSettings){
+                return state.globalContents.pageSettings.filter(el => el.slug === state.currentPageSlug)[0] !== ''
+            } else {
+                return false
+            }
         },
-        isMasterUser: (state) => (currentUser) => {
-            return state.masterUserAddress === currentUser
+        isMasterUser: (state) => {
+            return state.globalContents.masterUserId === state.globalContents.currentUserId
         }
     }
 })

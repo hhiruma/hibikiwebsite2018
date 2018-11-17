@@ -2,25 +2,26 @@
   <div id="MB_container">
     <menu-bar-element v-for="page in pageList" :pageData="page" :key="page.slug"/>
     <div style="position: absolute; top: 10px; right: 10px; color: white"
-       v-if="$store.getters.isMasterUser(currentUser)">編集モード</div>
+        v-if="isMasterUser">編集モード</div>
   </div>
 </template>
 
 <script>
+import firebase from 'firebase'
 import firestore from '@/firebase_firestore'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import MenuBarElement from '@/components/MenuBarElement'
 
 export default {
   name: 'MenuBar',
-  data () {
-    return {
-      currentUser: firebase.auth().currentUser
-    }
+  computed: {
+    ...mapGetters([
+      'isMasterUser'
+    ]),
+    ...mapState({
+      pageList: state => state.globalContents.pageSettings
+    })
   },
-  computed: mapState({
-    pageList: state => state.globalContents.pageSettings
-  }),
   components: {
     'menu-bar-element': MenuBarElement
   }

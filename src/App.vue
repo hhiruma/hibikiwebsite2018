@@ -8,6 +8,7 @@
 
 <script>
 import MenuBar from '@/components/MenuBar'
+import firebase from 'firebase'
 import store from '@/store'
 import router from '@/router'
 import LoadingCover from '@/components/LoadingCover'
@@ -24,24 +25,30 @@ export default {
         isLoading: true,
         targetParams: [],
       },
-      output: {} //expect 'pageSettings'
+      output: {} //expect 'pageSettings', 'masterUserId'
     }
   },
   watch: {
     output(val){
-      if ('pageSettings' in val) {
-        store.commit('addToGlobalContents', {
-          name: 'pageSettings',
-          content: val.pageSettings
-        })
+      const globalizeContentKey = ['pageSettings', 'masterUserId']
+      for (const key of globalizeContentKey){
+        if (key in val) {
+          store.commit('addToGlobalContents', {
+            name: key,
+            content: val[key]
+          })
+        }
       }
     }
   },
   async created() {
     store.commit('goToTop')
     contentsLoader.addLoadTarget(this.loader, loaderPresets.pageSettings)
+    contentsLoader.addLoadTarget(this.loader, loaderPresets.masterUserId)
 
     this.output = await contentsLoader.startLoading(this.loader)
+
+    store.commit('setCurrentUserId')
 
     window.addEventListener('resize', () => {
       store.commit('setResizeVals', {mode: 'width', val: window.innerWidth})
