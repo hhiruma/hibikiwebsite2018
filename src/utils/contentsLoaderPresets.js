@@ -52,6 +52,6 @@ export default {
     type: 'firestore',
     whichPath: 'field',
     path: 'Settings/Users',
-    fields: ['MasterUserId']
+    fields: ['masterUserId']
   }
 }
