@@ -64,12 +64,11 @@ export default {
                     let tmp = {}
                     for (const field of param.fields) {
                         if (field in data){
-                            tmp[field] = data[field]
+                            responseArray.push(data[field])
                         } else {
                             console.error('Specified field does not exist.')
                         }
                     }
-                    responseArray.push(tmp)
                     break
 
                 default:
