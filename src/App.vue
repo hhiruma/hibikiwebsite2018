@@ -4,6 +4,26 @@
     <router-view v-if="!loader.isLoading"/>
     <loading-cover v-if="loader.isLoading"/>
   </div>
+  <!-- <v-app>
+    <v-toolbar app>
+      <v-toolbar-title class="headline text-uppercase">
+        <span>Vuetify</span>
+        <span class="font-weight-light">MATERIAL DESIGN</span>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn
+        flat
+        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        target="_blank"
+      >
+        <span class="mr-2">Latest Release</span>
+      </v-btn>
+    </v-toolbar>
+
+    <v-content>
+      <HelloWorld/>
+    </v-content>
+  </v-app> -->
 </template>
 
 <script>
@@ -13,6 +33,8 @@ import store from '@/store'
 import router from '@/router'
 import LoadingCover from '@/components/LoadingCover'
 import { contentsLoader, loaderPresets } from '@/utils'
+import HelloWorldVue from './components/HelloWorld.vue';
+// import HelloWorld from '@/components/HelloWorld'
 
 export default {
   name: 'App',
@@ -57,7 +79,8 @@ export default {
   },
   components: {
     'menu-bar': MenuBar,
-    'loading-cover': LoadingCover
+    'loading-cover': LoadingCover,
+    // HelloWorld
   }
 }
 </script>
