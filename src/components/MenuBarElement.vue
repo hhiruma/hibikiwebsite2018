@@ -1,10 +1,10 @@
 <template>
-  <div v-if="pageData.slug === currentPageSlug" class="MB_element hvr-underline-from-left">
+  <v-btn flat v-if="pageData.slug === currentPageSlug">
       {{ pageData.title }}
-  </div>
-  <div v-else class="MB_element hvr-underline-from-center" @click="changePage(pageData.slug)">
+  </v-btn>
+  <v-btn flat v-else @click="changePage(pageData.slug)">
       {{ pageData.title }}
-  </div>
+  </v-btn>
 </template>
 
 <script>

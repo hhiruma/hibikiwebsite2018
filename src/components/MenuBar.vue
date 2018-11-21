@@ -1,9 +1,14 @@
 <template>
-  <div id="MB_container">
-    <menu-bar-element v-for="page in pageList" :pageData="page" :key="page.slug"/>
-    <div style="position: absolute; top: 10px; right: 10px; color: white"
-        v-if="isMasterUser">編集モード</div>
-  </div>
+  <v-toolbar dark dense style="background-color: rgba(0, 0, 0, 0.6);">
+    <v-toolbar-side-icon></v-toolbar-side-icon>
+    <v-toolbar-items>
+      <menu-bar-element v-for="page in pageList" :pageData="page" :key="page.slug"/>
+    </v-toolbar-items>
+    <v-spacer></v-spacer>
+    <v-toolbar-items v-if="isMasterUser">
+      <v-toolbar-title>編集モード</v-toolbar-title>
+    </v-toolbar-items>
+  </v-toolbar>
 </template>
 
 <script>
