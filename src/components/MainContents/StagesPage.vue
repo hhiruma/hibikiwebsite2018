@@ -1,30 +1,83 @@
 <template>
-  <div id="StagesContainer">
+  <v-layout id="StagesContainer" justify-space-around align-content-space-around>
     <template v-if="!loader.isLoading">
-      <div id="StagesMenuContainer">
-        <div class="StageMenu" @click="moveToPage(0)">
-          トップ
-        </div>
-        <div class="StageMenu" v-for="yearGroup in output.yearGroups" :key="yearGroup" @click="moveToPage(constVal.MENU, Number(yearGroup))">
-          {{ yearGroup }}
-        </div>
-      </div>
-      <div id="StagesMenuContent">
+      <v-flex xs2 id="StagesMenuContainer">
+        <v-list dense style="border-radius: 10px">
+          <v-subheader>MENU</v-subheader>
+
+          <v-divider></v-divider>
+
+          <v-list-tile @click="moveToPage(0)">
+            <v-list-tile-avatar>
+              <v-icon small>home</v-icon>
+            </v-list-tile-avatar>
+            トップ
+          </v-list-tile>
+
+          <v-divider></v-divider>
+
+          <v-list-tile v-for="yearGroup in output.yearGroups" :key="yearGroup" @click="moveToPage(constVal.MENU, Number(yearGroup))">
+            <v-list-tile-avatar>
+              <v-icon v-if="yearGroup === selectedYear">
+                arrow_right
+              </v-icon>
+            </v-list-tile-avatar>
+            {{ yearGroup }}年度
+          </v-list-tile>
+        </v-list>
+      </v-flex>
+
+      <v-flex xs9 id="StagesMenuContent">
+        <v-breadcrumbs :items="breadCrumbItems" divider=">" style="padding: 20px 0px; height: 30px; background-color: gray; border-radius: 10px; margin-bottom: 15px">
+          <template slot="item" slot-scope="props">
+            <v-btn dark flat small @click="moveToPage(props.item.jumpTargetPageNum, -1)">{{ props.item.text }}</v-btn>
+          </template>
+          <v-icon slot="divider" color="white">chevron_right</v-icon>
+        </v-breadcrumbs>
+
         <template v-if="pagePos === constVal.TOP">
-          {{ output.stagesDetails.stagesMenuDescription }}
+          {{ output.stagesDetails}}
         </template>
+
         <template v-else-if="pagePos === constVal.MENU">
-          <div class="StagesMenuEl" v-for="content in contentSelectedYear" :key="content.postId"
-            :style="'background-image: url(http://img.youtube.com/vi/' + content.youtubeMovieId[0] + '/0.jpg)'"
-            @click="moveToPage(constVal.CONTENT, content.postId)">
-            {{ content.stageName }}
-          </div>
+          <v-layout justify-space-between wrap>
+            <template v-for="content in contentSelectedYear">
+              <v-flex xs4 @click="moveToPage(constVal.CONTENT, content.postId)" :key="content.postId">
+                <v-hover>
+                  <v-card dark height="150px"
+                  style="border-radius: 10px; cursor: pointer"
+                  slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`">
+                    <v-img height="100px" :src="'http://img.youtube.com/vi/' + content.youtubeMovieId[0] + '/0.jpg'">
+                      <v-expand-transition>
+                        <div
+                            v-if="hover"
+                            class="d-flex transition-fast-in-fast-out black darken-2 v-card--reveal subheading white--text"
+                            style="height: 100%;"
+                          >
+                          詳細
+                        </div>
+                      </v-expand-transition>
+                    </v-img>
+                    <v-card-title>
+                      <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis">
+                      {{ content.stageName }}
+                      </span>
+                    </v-card-title>
+                  </v-card>
+                </v-hover>
+              </v-flex>
+            </template>
+          </v-layout>
         </template>
+
         <template v-else-if="pagePos === constVal.CONTENT">
-          <div id="StagesMediaBigContainer">
-            <div id="StagesMediaContainer">
+          <v-layout row wrap id="StagesMediaBigContainer">
+            <v-flex xs12>
+              <h1 style="color: white">{{ selectedPost.stageName }}</h1>
+            </v-flex>
+            <v-flex xs9 id="StagesMediaContainer">
               <div v-if="selectedMedia.type === 'video'">
-                <iframe
+                <iframe style="min-height: 250px"
                   width="100%" height="100%" :src="'https://www.youtube.com/embed/'+selectedMedia.path"
                   frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
                 </iframe>
@@ -33,14 +86,15 @@
                 <div class="bgCoverSettings" :style="'background-image: url('+selectedMedia.path+')'" width="100%" height="100%">
                 </div>
               </div>
-            </div>
-            <div id="StagesMediaSelector">
-              <div class="StagesMediaSelectorEl bgCoverSettings"
+            </v-flex>
+            <v-flex xs3 id="StagesMediaSelector">
+              <v-flex class="StagesMediaSelectorEl bgCoverSettings"
                 v-for="movieId in selectedPost.youtubeMovieId" :key="movieId"
                 :style="'background-image: url(http://img.youtube.com/vi/' + movieId + '/0.jpg)'"
                 :class="{StagesMediaSelectorElSelected: movieId === selectedMedia.path}"
                 @click="changeMedia('video', movieId)">
-              </div>
+                <v-icon x-large color="red"> play_circle_filled_white </v-icon>
+              </v-flex>
               <div class="StagesMediaSelectorEl bgCoverSettings"
                 v-for="picturePath in selectedPost.picturePath" :key="picturePath"
                 v-if="picturePath !== ''"
@@ -48,8 +102,8 @@
                 :class="{StagesMediaSelectorElSelected: picturePath === selectedMedia.path}"
                 @click="changeMedia('picture', picturePath)">
               </div>
-            </div>
-          </div>
+            </v-flex>
+          </v-layout>
           <div id="StagesTextContainer">
             <div>
               {{ selectedPost.stageDescription }}
@@ -62,9 +116,9 @@
             </div>
           </div>
         </template>
-      </div>
+      </v-flex>
     </template>
-  </div>
+  </v-layout>
 </template>
 
 <script>
@@ -89,6 +143,12 @@ export default {
         MENU: 1,
         CONTENT: 2
       },
+      breadCrumbItems: [{
+        text: 'トップ',
+        disabled: false,
+        href: "",
+        jumpTargetPageNum: 0
+      }],
       loader: {
         isLoading: true,
         targetParams: [],
@@ -113,13 +173,17 @@ export default {
         minute = '0'+String(minute)
       }
       return '【日時】 ' + year + '年 ' + month + '月 ' + day + '日   ' + hour + ':' + minute + '〜'
-    }
+    },
   },
   methods: {
     moveToPage(pos, param=null){
       this.pagePos = pos
       if(pos === this.constVal.TOP){
         this.selectedYear = 0
+        while(this.breadCrumbItems.length > this.constVal.TOP+1){
+          this.breadCrumbItems.pop()
+        }
+
       } else if (pos === this.constVal.MENU) {
         if (!isNaN(param)){
           if(param !== -1){
@@ -130,6 +194,16 @@ export default {
           moveToPage(this.constVal.TOP)
         }
         this.selectedPost = {}
+        while(this.breadCrumbItems.length > this.constVal.MENU){
+          this.breadCrumbItems.pop()
+        }
+        this.breadCrumbItems.push({
+          text: this.selectedYear + '年度',
+          disabled: false,
+          href: "",
+          jumpTargetPageNum: this.constVal.MENU
+        })
+
       } else if (pos === this.constVal.CONTENT) {
         this.selectedPost = this.output.pageContents.filter(el => el.postId === param)[0]
         if (this.selectedPost === null){
@@ -142,6 +216,13 @@ export default {
         } else {
           console.log("else")
         }
+
+        this.breadCrumbItems.push({
+            text: "ステージ詳細",
+            disabled: false,
+            href: "",
+            jumpTargetPageNum: this.constVal.CONTENT
+        })
       }
     },
     changeMedia(type, path){
@@ -160,79 +241,23 @@ export default {
 
 <style scoped>
 #StagesContainer {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-
-#StagesMenuContainer {
-  position: absolute;
-  box-sizing: border-box;
   display: flex;
-  flex-direction: column;
-  width: 20%;
-  height: 100%;
-  padding: 5% 1% 2% 1%;
-}
-
-.StageMenu {
-  width: 100%;
-  height: 30px;
-  background-color: rgba(255, 255, 255, 0.5);
-  margin: 10px 0;
-  padding-left: 10px;
-  box-sizing: border-box;
-  cursor: pointer
-}
-
-.StageMenu:hover {
-  background-color: rgba(255, 255, 255, 0.9);
 }
 
 #StagesMenuContent {
-  position: absolute;
-  left: 20%;
-  margin: 5% 2% 2% 5%;
-  width: 73%;
-  height: 87%;
-  background-color: rgba(100, 100, 100, 0.8);
-  border-radius: 20px;
+  background-color: rgba(100, 100, 100, 0.8); border-radius: 20px;
   box-sizing: border-box;
   padding: 30px;
 }
 
-.StagesMenuEl {
-  background-size: cover;
-  background-repeat: none;
-  background-position: center center;
-  width: 120px;
-  height: 120px;
-  border-radius: 20px;
-  color: white;
-  cursor: pointer;
-}
-
-.StagesMenuEl:hover {
-  width: 130px;
-  height: 130px;
-}
-
-#StagesMediaBigContainer {
-  display: flex;
-  height: 70%;
-}
-
 #StagesMediaContainer, #StagesMediaContainer div {
-  width: 100%;
-  height: 100%;
   background-color: rgba(0, 0, 0, 0.3);
+  height: 250px;
 }
 
 #StagesMediaSelector {
-  width: 25%;
-  height: 100%;
+  max-height: 250px;
   background-color: rgba(0, 0, 0, 0.3);
-  box-sizing: border-box;
   overflow: scroll;
 }
 
@@ -260,10 +285,18 @@ export default {
 }
 
 #StagesTextContainer {
-  height: 26%;
   padding: 2%;
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 0px 0px 15px 15px;
-  overflow: scroll;
+}
+
+.v-card--reveal {
+  align-items: center;
+  bottom: 0;
+  justify-content: center;
+  opacity: .6;
+  position: absolute;
+  width: 100%;
+  font-size: 10px;
 }
 </style>

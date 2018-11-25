@@ -1,7 +1,7 @@
 <template>
-  <div id="MC_container" :class="{MC_container_show: pageShow, MC_container_hidden: !pageShow}">
+  <v-layout id="MC_container" :class="{MC_container_show: pageShow, MC_container_hidden: !pageShow}">
     <component :is="$route.params.pageSlug"/>
-  </div>
+  </v-layout>
 </template>
 
 <script>
@@ -23,14 +23,13 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #MC_container {
     background-color: rgba(0, 0, 0, 0.5);
     position: absolute;
 
-    height: 80%;
     box-sizing: border-box;
+    padding: 30px;
     border-radius: 15px;
 
     transition: all 0.4s ease;
