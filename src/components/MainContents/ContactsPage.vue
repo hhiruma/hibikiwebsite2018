@@ -1,50 +1,28 @@
 <template>
-    <div id="ContactsContainer">
-        <template v-if="pageLoaded">
-            <h1 id="ContactFormTitle"> お問い合わせフォーム </h1>
-            <div id="ContactForm">
-                <div id="ContactsDescription">
-                    {{ contactDescription }}
-                </div>
-                <hr>
-                <table>
-                    <tr>
-                        <td class="ContactInputHeader">お名前<span style="font-size: 0.7em; color: red">(必須)</span></td>
-                        <td><input placeholder="ex) 魁 響太郎"></td>
-                    </tr>
-                    <tr>
-                        <td class="ContactInputHeader">ご連絡先(メールアドバイス)<span style="font-size: 0.7em; color: red">(必須)</span></td>
-                        <td><input placeholder="ex) hibiki@example.com"></td>
-                    </tr>
-                    <tr>
-                        <td class="ContactInputHeader">ご用件<span style="font-size: 0.7em; color: red">(必須)</span></td>
-                        <td><textarea placeholder="舞台出演、見学等お気軽にご連絡ください" rows="6"/></td>
-                    </tr>
-                    <tr>
-                        <td class="ContactInputHeader">舞台日程</td>
-                        <td><input type="date"></td>
-                    </tr>
-                    <tr>
-                        <td class="ContactInputHeader">舞台の場所 (名称 または 住所)</td>
-                        <td><input placeholder="名称 または 住所を入力してください"></td>
-                    </tr>
-                    <tr>
-                        <td class="ContactInputHeader">舞台の広さ (縦 x 横)</td>
-                        <td><input placeholder="ex) 縦 ○m x 横 ○m"></td>
-                    </tr>
-                    <tr>
-                        <td class="ContactInputHeader">演奏予定時間</td>
-                        <td><input placeholder="ex) ○分程度"></td>
-                    </tr>
-                    <tr>
-                        <td class="ContactInputHeader">ご回答期限目安</td>
-                        <td><input placeholder="ex) ○月☓日まで"></td>
-                    </tr>
-                </table>
-                <div id="ContactFormSender">送信</div>
+    <v-layout id="ContactsContainer" column v-if="pageLoaded">
+        <v-flex xs12>
+            <h1 style="color: white"> お問い合わせフォーム </h1>
+        </v-flex>
+        <v-flex xs12 id="ContactForm">
+            <div id="ContactsDescription">
+                {{ contactDescription }}
             </div>
-        </template>
-    </div>
+            <hr>
+            <v-form>
+                <v-text-field v-model="form.name" label="お名前" :rules="[v => !!v || '必須']" required></v-text-field>
+                <v-text-field v-model="form.address" label="ご連絡先《メールアドレス）" :rules="[v => !!v || '必須',  v => /.+@.+/.test(v) || '形式が間違っています']" required></v-text-field>
+                <v-textarea v-model="form.main" label="ご用件" required :rules="[v => !!v || '必須']" box></v-textarea>
+                <v-text-field v-model="form.date" label="舞台日程"></v-text-field>
+                <v-text-field v-model="form.place" label="舞台の場所（名称 または 住所)"></v-text-field>
+                <v-text-field v-model="form.size" label="舞台の広さ (縦 x 横)"></v-text-field>
+                <v-text-field v-model="form.time" label="演奏予定時間"></v-text-field>
+                <v-text-field v-model="form.due" label="ご回答期限目安"></v-text-field>
+                <v-btn :disabled="form.valid" @click="submit">
+                    送信
+                </v-btn>
+            </v-form>
+        </v-flex>
+    </v-layout>
 </template>
 
 <script>
@@ -58,7 +36,22 @@ export default {
   data() {
       return {
           contactDescription: "",
-          pageLoaded: false
+          pageLoaded: false,
+          form: {
+              name: "",
+              address: "",
+              main: "",
+              date: "",
+              place: "",
+              size: "",
+              time: "",
+              due: "",
+          }
+      }
+  },
+  methods: {
+      submit() {
+          console.log(this.form)
       }
   },
   watch: {
@@ -79,60 +72,16 @@ export default {
 
 <style scoped>
 #ContactsContainer {
-    position: absolute;
     width: 100%;
     height: 100%;
     overflow: scroll;
 }
 
-#ContactFormTitle {
-    position: absolute;
-    left: 5%;
-    color: white;
-}
-
 #ContactForm {
-    position: absolute;
     width: 70%;
     background-color: rgba(200, 200, 200, 0.8);
-    top: 100px;
     padding: 20px 20px 30px 20px;
     box-sizing: border-box;
-    left: 3%;
-    margin-bottom: 50px;
+    border-radius: 20px;
 }
-
-#ContactForm table{
-    width: 100%;
-}
-#ContactForm tr {
-    width: 100%;
-}
-
-#ContactForm .ContactInputHeader{
-    width: 40%;
-}
-
-#ContactForm td {
-    width: 80px;
-    height: 40px;
-    font-size: 0.9em;
-}
-
-#ContactForm input, #ContactForm textarea{
-    width: 100%;
-}
-
-#ContactFormSender {
-    padding: 10px 30px;
-    background-color: white;
-    color: black;
-    border-radius: 5px;
-    width: 50px;
-    position: relative;
-    text-align: center;
-    margin: 10px 0;
-    cursor: pointer;
-}
-
 </style>
