@@ -1,18 +1,28 @@
 <template>
-  <div id="AboutUsContainer">
-    <div v-if="!loader.isLoading">
-      <div id="AboutUsDescContainer">
-        <div id="AboutUsDescMenu">
-          <div class="AboutUsDescMenuEl" v-for="pageContent in output.pageContents" :key="pageContent.order" @click="changeMenu(pageContent.order)">
+  <v-layout id="AboutUsContainer">
+    <template v-if="!loader.isLoading">
+      <v-flex xs3 id="AboutUsMenu">
+        <v-list dense style="border-radius: 10px; width: 220px">
+          <v-subheader>MENU</v-subheader>
+
+          <v-divider></v-divider>
+
+          <v-list-tile v-for="pageContent in output.pageContents" :key="pageContent" 
+            @click="changeMenu(pageContent.order)">
+            <v-list-tile-avatar>
+              <v-icon v-if="pageContent.order == selectedMenuOrder">arrow_right</v-icon>
+            </v-list-tile-avatar>
             {{ pageContent.title }}
-          </div>
-        </div>
-        <div id="AboutUsDesc">
+          </v-list-tile>
+        </v-list>
+      </v-flex>
+      <v-flex xs8 id="AboutUsDescContainer">
+        <v-flex id="AboutUsDesc">
           {{ output.pageContents.filter(el => el.order === selectedMenuOrder)[0].content }}
-        </div>
-      </div>
-    </div>
-  </div>
+        </v-flex>
+      </v-flex>
+    </template>
+  </v-layout>
 </template>
 
 <script>
@@ -46,13 +56,13 @@ export default {
 
 <style scoped>
 #AboutUsContainer {
-  position: absolute;
+  /* position: absolute; */
   height: 100%;
   width: 100%;
 }
 
 #AboutUsDescContainer {
-  position: absolute;
+  /* position: absolute; */
   left: 0;
   top: 0;
   width: 100%;
