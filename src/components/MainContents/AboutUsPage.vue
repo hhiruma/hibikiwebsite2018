@@ -7,7 +7,7 @@
 
           <v-divider></v-divider>
 
-          <v-list-tile v-for="pageContent in output.pageContents" :key="pageContent" 
+          <v-list-tile v-for="pageContent in output.pageContents" :key="pageContent.order"
             @click="changeMenu(pageContent.order)">
             <v-list-tile-avatar>
               <v-icon v-if="pageContent.order == selectedMenuOrder">arrow_right</v-icon>
