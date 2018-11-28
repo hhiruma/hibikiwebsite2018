@@ -31,6 +31,7 @@ export default {
     box-sizing: border-box;
     padding: 30px;
     border-radius: 15px;
+    min-height: 500px;
 
     transition: all 0.4s ease;
 }
