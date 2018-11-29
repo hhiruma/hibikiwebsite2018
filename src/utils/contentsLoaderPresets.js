@@ -53,5 +53,11 @@ export default {
     whichPath: 'field',
     path: 'Settings/Users',
     fields: ['masterUserId']
+  },
+  newComersContents: {
+    name: 'newComersContents',
+    type: 'firestore',
+    whichPath: 'doc',
+    path: 'Contents/NewComers'
   }
 }
