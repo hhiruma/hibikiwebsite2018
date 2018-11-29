@@ -41,32 +41,30 @@
 
         <template v-else-if="pagePos === constVal.MENU">
           <v-layout justify-space-between wrap>
-            <template v-for="content in contentSelectedYear">
-              <v-flex xs4 @click="moveToPage(constVal.CONTENT, content.postId)" :key="content.postId">
-                <v-hover>
-                  <v-card dark height="150px"
-                  style="border-radius: 10px; cursor: pointer"
-                  slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`">
-                    <v-img height="100px" :src="'http://img.youtube.com/vi/' + content.youtubeMovieId[0] + '/0.jpg'">
-                      <v-expand-transition>
-                        <div
-                            v-if="hover"
-                            class="d-flex transition-fast-in-fast-out black darken-2 v-card--reveal subheading white--text"
-                            style="height: 100%;"
-                          >
-                          詳細
-                        </div>
-                      </v-expand-transition>
-                    </v-img>
-                    <v-card-title>
-                      <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis">
-                      {{ content.stageName }}
-                      </span>
-                    </v-card-title>
-                  </v-card>
-                </v-hover>
-              </v-flex>
-            </template>
+            <v-flex v-for="content in contentSelectedYear" xs4 @click="moveToPage(constVal.CONTENT, content.postId)" :key="content.postId">
+              <v-hover>
+                <v-card dark height="150px"
+                style="border-radius: 10px; cursor: pointer"
+                slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`">
+                  <v-img height="100px" :src="'http://img.youtube.com/vi/' + content.youtubeMovieId[0] + '/0.jpg'">
+                    <v-expand-transition>
+                      <div
+                          v-if="hover"
+                          class="d-flex transition-fast-in-fast-out black darken-2 v-card--reveal subheading white--text"
+                          style="height: 100%;"
+                        >
+                        詳細
+                      </div>
+                    </v-expand-transition>
+                  </v-img>
+                  <v-card-title>
+                    <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis">
+                    {{ content.stageName }}
+                    </span>
+                  </v-card-title>
+                </v-card>
+              </v-hover>
+            </v-flex>
           </v-layout>
         </template>
 
