@@ -1,10 +1,11 @@
 <template>
   <v-app>
-    <div id="app" :style="{ 'background-image': 'url('+img_src+')'}">
+    <v-flex id="app" >
+      <div id="bgContainer" :style="{ 'background-image': 'url('+img_src+')'}"></div>
       <menu-bar v-if="!loader.isLoading"/>
       <router-view v-if="!loader.isLoading"/>
       <loading-cover v-if="loader.isLoading"/>
-    </div>
+    </v-flex>
   </v-app>
 </template>
 
@@ -80,8 +81,16 @@ html, body {
 #app {
   width: 100%;
   height: 100%;
+  z-index: 0;
+}
+
+#bgContainer {
+  position: fixed;
+  width: 100%;
+  height: 100%;
   background-size: cover;
   background-repeat: none;
   background-position: center center;
+  z-index: -1;
 }
 </style>

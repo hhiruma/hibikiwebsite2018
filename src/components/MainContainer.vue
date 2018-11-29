@@ -1,7 +1,7 @@
 <template>
-  <v-layout id="MC_container" :class="{MC_container_show: pageShow, MC_container_hidden: !pageShow}">
+  <v-flex id="MC_container" :class="{MC_container_show: pageShow, MC_container_hidden: !pageShow}">
     <component :is="$route.params.pageSlug"/>
-  </v-layout>
+  </v-flex>
 </template>
 
 <script>
@@ -26,27 +26,26 @@ export default {
 <style scoped>
 #MC_container {
     background-color: rgba(0, 0, 0, 0.5);
-    position: absolute;
 
     box-sizing: border-box;
     padding: 30px;
     border-radius: 15px;
     min-height: 500px;
+    width: 94%;
+    margin-left: 3%;
+    margin-right: 3%;
+    margin-top: 30px;
+    margin-bottom: 40px;
 
     transition: all 0.4s ease;
+    z-index: 1;
 }
 
 .MC_container_show {
-    top: 15%;
-    left: 3%;
-    width: 94%;
     opacity: 1.0;
 }
 
 .MC_container_hidden {
-    top: 15%;
-    left: 100%;
-    width: 0%;
     opacity: 0;
 }
 </style>
