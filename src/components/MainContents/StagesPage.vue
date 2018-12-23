@@ -69,50 +69,56 @@
         </template>
 
         <template v-else-if="pagePos === constVal.CONTENT">
-          <v-layout row wrap id="StagesMediaBigContainer">
+          <v-flex id="StagesMediaBigContainer">
             <v-flex xs12>
               <h1 style="color: white">{{ selectedPost.stageName }}</h1>
             </v-flex>
-            <v-flex xs9 id="StagesMediaContainer">
-              <div v-if="selectedMedia.type === 'video'">
-                <iframe style="min-height: 250px"
-                  width="100%" height="100%" :src="'https://www.youtube.com/embed/'+selectedMedia.path"
+            <v-layout row>
+              <v-flex xs9 id="StagesMediaContainer">
+                <iframe
+                  v-if="selectedMedia.type === 'video'"
+                  style="min-height: 250px"
+                  width="100%" height="100%"
+                  :src="'https://www.youtube.com/embed/'+selectedMedia.path"
                   frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
                 </iframe>
-              </div>
-              <div v-if="selectedMedia.type === 'picture'">
+              </v-flex>
+              <v-flex v-if="selectedMedia.type === 'picture'">
                 <div class="bgCoverSettings" :style="'background-image: url('+selectedMedia.path+')'" width="100%" height="100%">
                 </div>
-              </div>
-            </v-flex>
-            <v-flex xs3 id="StagesMediaSelector">
-              <v-flex class="StagesMediaSelectorEl bgCoverSettings"
-                v-for="movieId in selectedPost.youtubeMovieId" :key="movieId"
-                :style="'background-image: url(http://img.youtube.com/vi/' + movieId + '/0.jpg)'"
-                :class="{StagesMediaSelectorElSelected: movieId === selectedMedia.path}"
-                @click="changeMedia('video', movieId)">
-                <v-icon x-large color="red"> play_circle_filled_white </v-icon>
               </v-flex>
-              <div class="StagesMediaSelectorEl bgCoverSettings"
-                v-for="picturePath in selectedPost.picturePath" :key="picturePath"
-                v-if="picturePath !== ''"
-                :style="'background-image: url('+picturePath+')'"
-                :class="{StagesMediaSelectorElSelected: picturePath === selectedMedia.path}"
-                @click="changeMedia('picture', picturePath)">
-              </div>
-            </v-flex>
-          </v-layout>
-          <div id="StagesTextContainer">
-            <div>
+              <v-flex xs3 id="StagesMediaSelector">
+                <div style="position: absolute; top: 0; width: 100%">
+                  <v-flex class="StagesMediaSelectorEl bgCoverSettings"
+                    v-for="movieId in selectedPost.youtubeMovieId" :key="movieId"
+                    :style="'background-image: url(http://img.youtube.com/vi/' + movieId + '/0.jpg)'"
+                    :class="{StagesMediaSelectorElSelected: movieId === selectedMedia.path}"
+                    @click="changeMedia('video', movieId)">
+                    <v-icon x-large color="red"> play_circle_filled_white </v-icon>
+                  </v-flex>
+                  <v-flex class="StagesMediaSelectorEl bgCoverSettings"
+                    v-for="picturePath in selectedPost.picturePath" :key="picturePath"
+                    v-if="picturePath !== ''"
+                    :style="'background-image: url('+picturePath+')'"
+                    :class="{StagesMediaSelectorElSelected: picturePath === selectedMedia.path}"
+                    @click="changeMedia('picture', picturePath)">
+                  </v-flex>
+                </div>
+              </v-flex>
+            </v-layout>
+          </v-flex>
+
+          <v-flex id="StagesTextContainer">
+            <v-flex>
               {{ selectedPost.stageDescription }}
-            </div>
-            <div>
+            </v-flex>
+            <v-flex>
               {{ formatDate }}
-            </div>
-            <div>
+            </v-flex>
+            <v-flex>
               【場所】 {{ selectedPost.location }}
-            </div>
-          </div>
+            </v-flex>
+          </v-flex>
         </template>
       </v-flex>
     </template>
@@ -248,15 +254,38 @@ export default {
   padding: 30px;
 }
 
-#StagesMediaContainer, #StagesMediaContainer div {
+#StagesMediaContainer {
+  position: relative;
   background-color: rgba(0, 0, 0, 0.3);
-  height: 250px;
+  width: 100%;
+}
+
+#StagesMediaContainer:before {
+  content: "";
+  display: block;
+  padding-top: 56.25%;
+}
+
+#StagesMediaContainer iframe, #StagesMediaContainer div{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
 }
 
 #StagesMediaSelector {
-  max-height: 250px;
+  position: relative;
+  width: 100%;
   background-color: rgba(0, 0, 0, 0.3);
-  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+#StagesMediaSelector:before {
+  content: "";
+  display: block;
+  padding-top: 168.75%;
 }
 
 .StagesMediaSelectorEl {
