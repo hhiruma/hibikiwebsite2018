@@ -82,9 +82,11 @@
                   :src="'https://www.youtube.com/embed/'+selectedMedia.path"
                   frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
                 </iframe>
-              </v-flex>
-              <v-flex v-if="selectedMedia.type === 'picture'">
-                <div class="bgCoverSettings" :style="'background-image: url('+selectedMedia.path+')'" width="100%" height="100%">
+                <div
+                  v-else-if="selectedMedia.type === 'picture'"
+                  class="bgCoverSettings"
+                  :style="'background-image: url('+selectedMedia.path+')'"
+                  width="100%" height="100%">
                 </div>
               </v-flex>
               <v-flex xs3 id="StagesMediaSelector">
