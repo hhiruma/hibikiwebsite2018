@@ -16,6 +16,12 @@ export default {
     type: 'firestore',
     whichPath: 'collection',
     path: 'Contents/AboutUs/Descriptions',
+    callback: (function (outputObj) {
+      for (let el of outputObj['pageContents']){
+        el['carouselState'] = 0
+      }
+      return outputObj
+    }),
     options: {
       order: {
         field: 'order',
