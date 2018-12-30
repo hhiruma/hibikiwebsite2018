@@ -16,8 +16,6 @@ import store from '@/store'
 import router from '@/router'
 import LoadingCover from '@/components/LoadingCover'
 import { contentsLoader, loaderPresets } from '@/utils'
-import HelloWorldVue from './components/HelloWorld.vue';
-// import HelloWorld from '@/components/HelloWorld'
 
 export default {
   name: 'App',
@@ -63,7 +61,6 @@ export default {
   components: {
     'menu-bar': MenuBar,
     'loading-cover': LoadingCover,
-    // HelloWorld
   }
 }
 </script>
