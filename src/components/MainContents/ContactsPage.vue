@@ -3,11 +3,12 @@
         <v-flex xs12>
             <h1 style="color: white"> お問い合わせフォーム </h1>
         </v-flex>
+        <br>
         <v-flex xs12 id="ContactForm">
             <div id="ContactsDescription">
                 {{ contactDescription }}
             </div>
-            <hr>
+            <br><hr><br>
             <v-form>
                 <v-text-field v-model="form.name" label="お名前" :rules="[v => !!v || '必須']" required></v-text-field>
                 <v-text-field v-model="form.address" label="ご連絡先《メールアドレス）" :rules="[v => !!v || '必須',  v => /.+@.+/.test(v) || '形式が間違っています']" required></v-text-field>
