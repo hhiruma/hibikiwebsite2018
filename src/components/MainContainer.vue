@@ -1,5 +1,5 @@
 <template>
-  <v-flex id="MC_container" :class="{MC_container_show: pageShow, MC_container_hidden: !pageShow}">
+  <v-flex v-if="pageShow" id="MC_container">
     <component :is="$route.params.pageSlug"/>
   </v-flex>
 </template>
@@ -41,13 +41,5 @@ export default {
 
     transition: all 0.4s ease;
     z-index: 1;
-}
-
-.MC_container_show {
-    opacity: 1.0;
-}
-
-.MC_container_hidden {
-    opacity: 0;
 }
 </style>
