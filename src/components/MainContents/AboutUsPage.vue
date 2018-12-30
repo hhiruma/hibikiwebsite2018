@@ -25,40 +25,9 @@
                   align-content-start
                   justify-end
                   >
-            <v-layout row>
-              <v-flex align-center x7 style="padding:30px 10px">
-                <v-card class="AboutUsMediaArea">
-                  <v-window v-model="pageContent.carouselState" max>
-                    <v-window-item v-for="url in pageContent.imagePaths" :key="url">
-                        <v-img :src='url' height=300 ></v-img>
-                    </v-window-item>
-                  </v-window>
-
-                  <v-item-group dark v-model="pageContent.carouselState" mandatory>
-                    <v-layout row justify-center class="AboutUsDescCarouselSelector">
-                      <v-item v-for="i in pageContent.imagePaths.length" :key="i">
-                        <div slot-scope="{ active, toggle }">
-                          <v-btn :input-value="active" icon @click="toggle" >
-                            ●
-                          </v-btn>
-                        </div>
-                      </v-item>
-                    </v-layout>
-                  </v-item-group>
-                </v-card>
-              </v-flex>
-              <v-flex xs5 align-content-end class="AboutUsDescArea">
-                <div class="AboutUsDescHider"></div>
-                <div class="AboutUsDesc">
-                  <div class="AboutUsDescTitle">
-                    {{ pageContent.title }}
-                  </div>
-                  <hr>
-                  <br>
-                  {{ pageContent.content }}
-                </div>
-              </v-flex>
-            </v-layout>
+            <about-us-desc-el
+                :page-content="pageContent">
+            </about-us-desc-el>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -69,13 +38,12 @@
 <script>
 import firestore from '@/firebase_firestore'
 import { contentsLoader, loaderPresets } from '@/utils'
+import AboutUsDescEl from '@/components/MainContents/AboutUsDescEl'
 
 export default {
   name: 'AboutUsPage',
   data() {
     return {
-      window: 0,
-      selectedMenuOrder: 0,
       loader: {
         isLoading: true,
         targetParams: [],
@@ -91,6 +59,9 @@ export default {
   async created() {
     contentsLoader.addLoadTarget(this.loader, loaderPresets.aboutUsContents)
     this.output = await contentsLoader.startLoading(this.loader)
+  },
+  components: {
+    'about-us-desc-el': AboutUsDescEl,
   }
 }
 </script>
