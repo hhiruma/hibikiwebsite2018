@@ -15,3 +15,5 @@ yarn-error.log*
 
 *.png
 *.jpeg
+
+.firebase/
