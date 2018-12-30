@@ -7,9 +7,9 @@
 
           <v-divider></v-divider>
 
-          <v-list-tile v-for="pageContent in output.pageContents"
+          <v-list-tile v-for="(pageContent, index) in output.pageContents"
                        :key="pageContent.order"
-                       @click="changeMenu(pageContent.order)">
+                       @click="$vuetify.goTo('#aboutUsEl'+index, '{duration: 300'); changeMenu(index)">
             <v-list-tile-avatar>
               <v-icon v-if="pageContent.order == selectedMenuOrder">arrow_right</v-icon>
             </v-list-tile-avatar>
@@ -20,14 +20,16 @@
 
       <v-flex xs9 id="AboutUsMain">
         <v-layout column>
-          <v-flex v-for="pageContent in output.pageContents"
+          <v-flex v-for="(pageContent, index) in output.pageContents"
                   class="AboutUsMainEl"
                   align-content-start
                   justify-end
                   >
+                  <div :id="'aboutUsEl'+index">
             <about-us-desc-el
-                :page-content="pageContent">
+              :page-content="pageContent">
             </about-us-desc-el>
+                  </div>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -44,6 +46,7 @@ export default {
   name: 'AboutUsPage',
   data() {
     return {
+      selectedMenuOrder: 0,
       loader: {
         isLoading: true,
         targetParams: [],
@@ -52,8 +55,9 @@ export default {
     }
   },
   methods: {
-    changeMenu(order) {
-      this.selectedMenuOrder = this.output.pageContents.filter(el => el.order === order)[0].order
+    changeMenu(index) {
+      this.selectedMenuOrder = index
+      //this.selectedMenuOrder = this.output.pageContents.filter(el => el.order === order)[0].order
     }
   },
   async created() {
