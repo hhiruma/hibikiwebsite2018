@@ -60,8 +60,8 @@ export default {
     path: 'Settings/Users',
     fields: ['masterUserId']
   },
-  newComersContents: {
-    name: 'newComersContents',
+  newComersSettings: {
+    name: 'newComersSettings',
     type: 'firestore',
     whichPath: 'doc',
     path: 'Contents/NewComers'
