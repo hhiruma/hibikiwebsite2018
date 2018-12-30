@@ -47,8 +47,10 @@ export default {
             switch (param.whichPath){
                 case 'collection':
                     let collectionRef = firestore.collection(param.path)
-                    if ('order' in param.options) {
-                        collectionRef = collectionRef.orderBy(param.options.order.field, param.options.order.direction)
+                    if ('options' in param){
+                      if ('order' in param.options) {
+                          collectionRef = collectionRef.orderBy(param.options.order.field, param.options.order.direction)
+                      }
                     }
                     (await collectionRef.get()).forEach(doc => responseArray.push(doc.data()))
                     break
