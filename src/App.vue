@@ -1,7 +1,10 @@
 <template>
   <v-app>
     <v-flex id="app" >
+      <!--
       <div id="bgContainer" :style="{ 'background-image': 'url('+img_src+')'}"></div>
+      -->
+      <background/>
       <menu-bar v-if="!loader.isLoading"/>
       <router-view v-if="!loader.isLoading"/>
       <loading-cover v-if="loader.isLoading"/>
@@ -10,6 +13,7 @@
 </template>
 
 <script>
+import Background from '@/components/Background'
 import MenuBar from '@/components/MenuBar'
 import firebase from 'firebase'
 import store from '@/store'
@@ -59,6 +63,7 @@ export default {
     })
   },
   components: {
+    'background': Background,
     'menu-bar': MenuBar,
     'loading-cover': LoadingCover,
   }
@@ -81,13 +86,4 @@ html, body {
   z-index: 0;
 }
 
-#bgContainer {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-repeat: none;
-  background-position: center center;
-  z-index: -1;
-}
 </style>

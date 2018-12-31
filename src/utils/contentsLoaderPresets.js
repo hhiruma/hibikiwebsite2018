@@ -65,5 +65,11 @@ export default {
     type: 'firestore',
     whichPath: 'doc',
     path: 'Contents/NewComers'
+  },
+  bgUrl: {
+    name: 'bgUrl',
+    type: 'firestore',
+    whichPath: 'doc',
+    path: 'Contents/Main/background/image_paths'
   }
 }
