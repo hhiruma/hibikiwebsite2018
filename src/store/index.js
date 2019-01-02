@@ -66,7 +66,10 @@ export default new Vuex.Store({
     getters: {
         currentPageIfShow (state) {
             if (state.globalContents.pageSettings){
-                return state.globalContents.pageSettings.filter(el => el.slug === state.currentPageSlug)[0] !== ''
+                const nextPage = state.globalContents.pageSettings.filter(el => el.slug === state.currentPageSlug)
+                if (nextPage.length) {
+                  return nextPage[0].slug !== '/'
+                }
             } else {
                 return false
             }

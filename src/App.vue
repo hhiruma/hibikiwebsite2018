@@ -1,10 +1,7 @@
 <template>
   <v-app>
-    <v-flex id="app" >
-      <!--
-      <div id="bgContainer" :style="{ 'background-image': 'url('+img_src+')'}"></div>
-      -->
-      <background/>
+    <v-flex id="app">
+      <background v-show="!loader.isLoading && !pageShow"/>
       <menu-bar v-if="!loader.isLoading"/>
       <router-view v-if="!loader.isLoading"/>
       <loading-cover v-if="loader.isLoading"/>
@@ -19,6 +16,7 @@ import firebase from 'firebase'
 import store from '@/store'
 import router from '@/router'
 import LoadingCover from '@/components/LoadingCover'
+import { mapGetters } from 'vuex'
 import { contentsLoader, loaderPresets } from '@/utils'
 
 export default {
@@ -35,6 +33,9 @@ export default {
       output: {} //expect 'pageSettings', 'masterUserId'
     }
   },
+  computed: mapGetters({
+    pageShow: 'currentPageIfShow'
+  }),
   watch: {
     output(val){
       const globalizeContentKey = ['pageSettings', 'masterUserId']

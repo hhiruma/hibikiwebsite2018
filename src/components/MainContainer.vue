@@ -27,17 +27,10 @@ export default {
 
 <style scoped>
 #MC_container {
-    background-color: rgba(0, 0, 0, 0.5);
-
     box-sizing: border-box;
     padding: 30px;
-    border-radius: 15px;
     min-height: 500px;
-    width: 94%;
-    margin-left: 3%;
-    margin-right: 3%;
-    margin-top: 30px;
-    margin-bottom: 40px;
+    width: 100%;
 
     transition: all 0.4s ease;
     z-index: 1;
