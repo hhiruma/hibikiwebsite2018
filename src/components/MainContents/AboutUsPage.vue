@@ -1,5 +1,6 @@
 <template>
-  <v-layout id="AboutUsContainer">
+  <v-container fluid id="AboutUsContainer" v-if="!loader.isLoading">
+      <!--
     <template v-if="!loader.isLoading">
       <v-flex xs3 id="AboutUsMenu">
         <v-list dense style="border-radius: 10px; width: 100%">
@@ -17,8 +18,11 @@
           </v-list-tile>
         </v-list>
       </v-flex>
+      -->
 
+      <!--
       <v-flex xs9 id="AboutUsMain">
+      -->
         <v-layout column>
           <v-flex v-for="(pageContent, index) in output.pageContents"
                   class="AboutUsMainEl"
@@ -27,14 +31,13 @@
                   >
                   <div :id="'aboutUsEl'+index">
             <about-us-desc-el
+              :index="index"
               :page-content="pageContent">
             </about-us-desc-el>
                   </div>
           </v-flex>
         </v-layout>
-      </v-flex>
-    </template>
-  </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -74,19 +77,21 @@ export default {
 #AboutUsContainer {
   height: 100%;
   width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: rgba(50, 50, 50, 0.8);
 }
 
 #AboutUsMain {
   width: 100%;
   height: 100%;
-  margin: 0 0 0 5%;
+  margin: 0;
+  padding: 0;
   border-radius: 10px;
-  background-color: rgba(50, 50, 50, 0.8);
 }
 
 .AboutUsMainEl {
-  min-height: 300px;
-  padding: 10px;
+  min-height: 500px;
 }
 
 .AboutUsMediaArea {

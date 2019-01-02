@@ -28,7 +28,6 @@ export default {
 <style scoped>
 #MC_container {
     box-sizing: border-box;
-    padding: 30px;
     min-height: 500px;
     width: 100%;
 

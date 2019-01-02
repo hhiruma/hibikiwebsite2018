@@ -1,37 +1,71 @@
 <template>
 <v-layout row>
-  <v-flex align-center x7 style="padding:30px 10px">
-    <v-card class="AboutUsMediaArea">
-      <v-window v-model="pageContent.carouselState" max>
-        <v-window-item v-for="url in pageContent.imagePaths" :key="url">
-            <v-img :src='url' height=300 ></v-img>
-        </v-window-item>
-      </v-window>
+  <template v-if="index % 2 == 0">
+    <v-flex align-center x7>
+      <v-card class="AboutUsMediaArea">
+        <v-window v-model="pageContent.carouselState" max>
+          <v-window-item v-for="url in pageContent.imagePaths" :key="url">
+              <v-img :src='url' height=500 ></v-img>
+          </v-window-item>
+        </v-window>
 
-      <v-item-group dark v-model="pageContent.carouselState" mandatory>
-        <v-layout row justify-center class="AboutUsDescCarouselSelector">
-          <v-item v-for="i in pageContent.imagePaths.length" :key="i">
-            <div slot-scope="{ active, toggle }">
-              <v-btn :input-value="active" icon @click="toggle" >
-                ●
-              </v-btn>
-            </div>
-          </v-item>
-        </v-layout>
-      </v-item-group>
-    </v-card>
-  </v-flex>
-  <v-flex xs5 align-content-end class="AboutUsDescArea">
-    <div class="AboutUsDescHider"></div>
-    <div class="AboutUsDesc">
-      <div class="AboutUsDescTitle">
-        {{ pageContent.title }}
+        <v-item-group dark v-model="pageContent.carouselState" mandatory>
+          <v-layout row justify-center class="AboutUsDescCarouselSelector">
+            <v-item v-for="i in pageContent.imagePaths.length" :key="i">
+              <div slot-scope="{ active, toggle }">
+                <v-btn :input-value="active" icon @click="toggle" >
+                  ●
+                </v-btn>
+              </div>
+            </v-item>
+          </v-layout>
+        </v-item-group>
+      </v-card>
+    </v-flex>
+    <v-flex xs5 align-content-end class="AboutUsDescArea">
+      <div class="AboutUsDesc">
+        <div class="AboutUsDescTitle">
+          {{ pageContent.title }}
+        </div>
+        <hr>
+        <br>
+        {{ pageContent.content }}
       </div>
-      <hr>
-      <br>
-      {{ pageContent.content }}
-    </div>
-  </v-flex>
+    </v-flex>
+  </template>
+  <template v-else>
+    <v-flex xs5 align-content-end class="AboutUsDescArea">
+      <div class="AboutUsDesc">
+        <div class="AboutUsDescTitle">
+          {{ pageContent.title }}
+        </div>
+        <hr>
+        <br>
+        {{ pageContent.content }}
+      </div>
+    </v-flex>
+    <v-flex align-center x7>
+      <v-card class="AboutUsMediaArea">
+        <v-window v-model="pageContent.carouselState" max>
+          <v-window-item v-for="url in pageContent.imagePaths" :key="url">
+              <v-img :src='url' height=500 ></v-img>
+          </v-window-item>
+        </v-window>
+
+        <v-item-group dark v-model="pageContent.carouselState" mandatory>
+          <v-layout row justify-center class="AboutUsDescCarouselSelector">
+            <v-item v-for="i in pageContent.imagePaths.length" :key="i">
+              <div slot-scope="{ active, toggle }">
+                <v-btn :input-value="active" icon @click="toggle" >
+                  ●
+                </v-btn>
+              </div>
+            </v-item>
+          </v-layout>
+        </v-item-group>
+      </v-card>
+    </v-flex>
+  </template>
 </v-layout>
 </template>
 
@@ -42,7 +76,7 @@ import { contentsLoader, loaderPresets } from '@/utils'
 import AboutUsDescEl from '@/components/MainContents/AboutUsDescEl'
 export default {
   name: 'AboutUsDescEl',
-  props: ['pageContent']
+  props: ['index', 'pageContent']
 }
 </script>
 
@@ -50,7 +84,6 @@ export default {
 <style scoped>
 .AboutUsMediaArea {
   position: relative;
-  border-radius: 10px;
   overflow: hidden;
   padding: 0;
 }
@@ -58,28 +91,14 @@ export default {
 .AboutUsDescArea {
   display: flex;
   align-items: center;
-  padding: 30px 10px 30px 0;
   position: relative;
-}
-
-.AboutUsDescHider {
-  display: block;
-  position: absolute;
-  left: -45px;
-  top: 30px;
-  width: 45px;
-  height: 300px;
-  background: white;
-  z-index: 10000;
-  border-radius: 35px 0 0 35px;
 }
 
 .AboutUsDesc{
   position: relative;
   background: white;
-  border-radius: 0 10px 10px 0;
-  height: 300px;
-  padding: 15px 15px 15px 0;
+  height: 500px;
+  padding: 30px;
   overflow: scroll;
 }
 
@@ -95,12 +114,6 @@ export default {
   bottom: 0px;
 }
 
-#AboutUsDescMenu {
-  position: absolute;
-  right: 0;
-  top: 5%;
-}
-
 .AboutUsDescMenuEl {
   background-color: gray;
   right: 0;
@@ -110,17 +123,6 @@ export default {
 
 .AboutUsDescMenuEl:hover {
   background-color: white;
-}
-
-#AboutUsDesc {
-  position: absolute;
-  right: 20px;
-  bottom: 50px;
-  width: 50%;
-  height: 35%;
-  padding: 10px;
-  background-color: gray;
-  box-sizing: border-box;
 }
 
 </style>
