@@ -4,6 +4,7 @@
       <background v-show="!loader.isLoading && !pageShow"/>
       <menu-bar v-if="!loader.isLoading"/>
       <router-view v-if="!loader.isLoading"/>
+      <transition/>
       <loading-cover v-if="loader.isLoading"/>
     </v-flex>
   </v-app>
@@ -11,6 +12,7 @@
 
 <script>
 import Background from '@/components/Background'
+import Transition from '@/components/Transition'
 import MenuBar from '@/components/MenuBar'
 import firebase from 'firebase'
 import store from '@/store'
@@ -67,6 +69,7 @@ export default {
     'background': Background,
     'menu-bar': MenuBar,
     'loading-cover': LoadingCover,
+    'transition': Transition
   }
 }
 </script>

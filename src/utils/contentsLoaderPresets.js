@@ -71,5 +71,11 @@ export default {
     type: 'firestore',
     whichPath: 'doc',
     path: 'Contents/Main/background/image_paths'
+  },
+  otherImagePaths: {
+    name: 'otherImagePaths',
+    type: 'firestore',
+    whichPath: 'doc',
+    path: 'Contents/otherImagePaths'
   }
 }
