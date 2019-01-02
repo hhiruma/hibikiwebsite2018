@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar dark dense id="MB_container">
+  <v-toolbar dense id="MB_container">
     <v-toolbar-side-icon></v-toolbar-side-icon>
     <v-toolbar-items>
       <menu-bar-element v-for="page in pageList" :pageData="page" :key="page.slug"/>
@@ -35,6 +35,5 @@ export default {
 
 <style scoped>
 #MB_container {
-    background-color: rgba(0, 0, 0, 0.6);
 }
 </style>
