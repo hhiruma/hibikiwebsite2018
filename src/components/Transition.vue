@@ -5,18 +5,6 @@
       :style="'background-image: url(' + output.otherImagePaths.translationBg1 +')'"/>
     <v-flex id="transCover2"
       :style="'background-image: url(' + output.otherImagePaths.translationBg2 +')'"/>
-    <v-btn
-      @click="testPlay()"
-      style="position: fixed; bottom: 0; z-index: 1000000">
-      test play </v-btn>
-    <v-btn
-      @click="transitionIn()"
-      style="position: fixed; bottom: 0; left: 150px; z-index: 1000000">
-      transision in </v-btn>
-    <v-btn
-      @click="transitionOut()"
-      style="position: fixed; bottom: 0; left: 300px; z-index: 1000000">
-      transision out </v-btn>
   </div>
 </template>
 
