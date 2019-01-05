@@ -122,6 +122,7 @@ export default {
           }
         })
         this.output = await contentsLoader.startLoading(this.loader)
+        this.$store.commit('setTransitionState', 'out')
     }
 }
 </script>

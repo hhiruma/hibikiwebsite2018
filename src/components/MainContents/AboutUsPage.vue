@@ -66,6 +66,7 @@ export default {
   async created() {
     contentsLoader.addLoadTarget(this.loader, loaderPresets.aboutUsContents)
     this.output = await contentsLoader.startLoading(this.loader)
+    this.$store.commit('setTransitionState', 'out')
   },
   components: {
     'about-us-desc-el': AboutUsDescEl,

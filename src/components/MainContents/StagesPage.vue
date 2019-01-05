@@ -241,6 +241,7 @@ export default {
     contentsLoader.addLoadTarget(this.loader, loaderPresets.stagesContents)
 
     this.output = await contentsLoader.startLoading(this.loader)
+    this.$store.commit('setTransitionState', 'out')
   }
 }
 </script>

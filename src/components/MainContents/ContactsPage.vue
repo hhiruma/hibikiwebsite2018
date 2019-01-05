@@ -66,7 +66,8 @@ export default {
       firestore.doc('Contents/Contact').get().then(doc => {
           this.contactDescription = doc.data().ContactDescription
       })
-      sendMail()
+      //sendMail()
+      this.$store.commit('setTransitionState', 'out')
   }
 }
 </script>
