@@ -47,9 +47,9 @@ export default new Vuex.Store({
             })
         },
         goToTop (state) {
-            state.currentPageSlug = ''
+            state.currentPageSlug = 'top'
             router.push({
-                path: '/',
+                path: '/top',
                 params: {
                     pageSlug: '',
                     pageShow: false

@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <v-flex id="app">
-      <background v-show="!loader.isLoading && !pageShow"/>
       <menu-bar v-if="!loader.isLoading"/>
       <router-view v-if="!loader.isLoading"/>
       <transition ref="transition"> {{ transition }} </transition>
