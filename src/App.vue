@@ -4,7 +4,7 @@
       <background v-show="!loader.isLoading && !pageShow"/>
       <menu-bar v-if="!loader.isLoading"/>
       <router-view v-if="!loader.isLoading"/>
-      <transition/>
+      <transition ref="transition"> {{ transition }} </transition>
       <loading-cover v-if="loader.isLoading"/>
     </v-flex>
   </v-app>
@@ -28,6 +28,7 @@ export default {
   data() {
     return {
       img_src: require('@/img/bg.jpg'),
+      isMounted: false,
       loader: {
         isLoading: true,
         targetParams: [],
@@ -35,9 +36,30 @@ export default {
       output: {} //expect 'pageSettings', 'masterUserId'
     }
   },
-  computed: mapGetters({
-    pageShow: 'currentPageIfShow'
-  }),
+  mounted() {
+    this.isMounted = true
+  },
+  computed: {
+    async transition() {
+      console.log('transision')
+      if (!this.isMounted) return
+      if (!this.$refs) return
+      const state = store.state.transitionState
+      console.log(state)
+
+      if (state === 'wait'){
+        //await this.$refs.transition.setStartPos()
+      } else if (state === 'in'){
+        await this.$refs.transition.transitionIn()
+        store.commit('changePage')
+      } else if (state === 'out'){
+        await this.$refs.transition.transitionOut()
+      }
+    },
+    ...mapGetters({
+      pageShow: 'currentPageIfShow'
+    })
+  },
   watch: {
     output(val){
       const globalizeContentKey = ['pageSettings', 'masterUserId']

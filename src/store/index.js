@@ -9,7 +9,9 @@ export default new Vuex.Store({
     state: {
         showContent: false,
         currentPageSlug: "",
+        nextPageSlug: "",
         currentPageIfShow: false,
+        transitionState: "wait",
         globalContents: {},  //expects 'pageSettings', 'masterUserId'
         appSize: {
             appWidth: -1,
@@ -24,10 +26,18 @@ export default new Vuex.Store({
                 state.appSize.appHeight = payload.val
             }
         },
-        changePage (state, slug) {
-            state.currentPageSlug = slug
+        setTransitionState(state, str){
+            state.transitionState = str
+        },
+        startTransition(state, slug) {
+            state.nextPageSlug = slug
+            state.transitionState = "in"
+        },
+        changePage (state) {
+            state.currentPageSlug = state.nextPageSlug
+            state.nextPageSlug = ""
 
-            const nextPage = state.globalContents.pageSettings.filter((el) => el.slug === slug)[0]
+            const nextPage = state.globalContents.pageSettings.filter((el) => el.slug === state.currentPageSlug)[0]
             router.push({
                 path: nextPage.slug ? nextPage.slug : '/',
                 params: {

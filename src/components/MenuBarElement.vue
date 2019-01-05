@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     changePage(slug) {
-      this.$store.commit('changePage', slug)
+      this.$store.commit('startTransition', slug)
     }
   }
 }

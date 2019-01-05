@@ -1,16 +1,21 @@
 <template>
-  <div id="transContainer">
+  <div id="transContainer" v-if="!loader.isLoading"
+                           :class="{transFront: transFront, transBack: !transFront}">
     <v-flex id="transCover"
       :style="'background-image: url(' + output.otherImagePaths.translationBg1 +')'"/>
     <v-flex id="transCover2"
       :style="'background-image: url(' + output.otherImagePaths.translationBg2 +')'"/>
     <v-btn
-      @click="transitionIn()"
+      @click="testPlay()"
       style="position: fixed; bottom: 0; z-index: 1000000">
+      test play </v-btn>
+    <v-btn
+      @click="transitionIn()"
+      style="position: fixed; bottom: 0; left: 150px; z-index: 1000000">
       transision in </v-btn>
     <v-btn
       @click="transitionOut()"
-      style="position: fixed; bottom: 0; left: 150px; z-index: 1000000">
+      style="position: fixed; bottom: 0; left: 300px; z-index: 1000000">
       transision out </v-btn>
   </div>
 </template>
@@ -23,6 +28,8 @@ export default {
   name: 'Transition',
   data() {
     return {
+      transFront: false,
+      isRendered: false,
       loader: {
         isLoading: true,
         targetParams: [],
@@ -30,13 +37,29 @@ export default {
       output: {} //expect 'otherImagePaths'
     }
   },
+  updated() {
+    if(document.getElementById('transCover') && document.getElementById('transCover2')){
+      if (this.isRendered === false){
+        this.setStartPos()
+      }
+      this.isRendered = true
+    }
+  },
   methods: {
+    async testPlay() {
+      const setSuccess = await this.setStartPos()
+      const slideInSuccess = await this.slideIn()
+      const tmp = await (async () => { setTimeout(() => {}, 1000)})
+      const slideOutSuccess = await this.slideOut()
+    },
     async transitionIn() {
+      this.transFront = true
       const setSuccess = await this.setStartPos()
       const slideInSuccess = await this.slideIn()
     },
     async transitionOut() {
       const slideOutSuccess = await this.slideOut()
+      this.transFront = false
     },
     async setStartPos() {
       let success = this.checkExists('transCover') && this.checkExists('transCover2')
@@ -70,7 +93,6 @@ export default {
       })
     },
     async slideIn() {
-    console.log(this.output)
       let success = this.checkExists('transCover') && this.checkExists('transCover2')
       let timeline = anime.timeline()
 
@@ -154,8 +176,14 @@ export default {
   width: 100%;
   height: 80vh;
   position: fixed;
-  z-index: -1;
   top: 0
+}
+
+.transFront{
+  z-index: 10000;
+}
+.transBack{
+  z-index: -1;
 }
 
 #transCover {
