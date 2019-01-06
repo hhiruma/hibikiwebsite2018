@@ -36,6 +36,12 @@ export default {
     path: 'Contents/Stages',
     fields: ['stagesMenuDescription']
   },
+  nextStageDetail: {
+    name: 'nextStageDetail',
+    type: 'firestore',
+    whichPath: 'doc',
+    path: 'Contents/Stages/Other/NextStage'
+  },
   stagesContents: {
     name: 'pageContents',
     type: 'firestore',

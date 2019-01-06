@@ -57,11 +57,28 @@
                   <v-layout column>
                     <v-flex style="margin-bottom: 20px;">
                       <h1>舞台について</h1>
-                      {{ output.stagesDetails}}
+                      <v-layout justify-end>
+                        <v-flex xs11>
+                          {{ output.stagesDetails}}
+                        </v-flex>
+                      </v-layout>
                     </v-flex>
-                    <v-flex>
+                    <v-flex v-if="output.nextStageDetail.hasNextStage">
                       <h1>次の舞台</h1>
-                      未実装...
+                      <v-layout justify-end>
+                        <v-flex xs11 >
+                          <h2> {{ output.nextStageDetail.name }} </h2>
+                          <v-flex>
+                            {{ output.nextStageDetail.description }}
+                          </v-flex>
+                          <v-flex>
+                            【日時】{{ output.nextStageDetail.location }}
+                          </v-flex>
+                          <v-flex>
+                            【場所】{{ output.nextStageDetail.date }}
+                          </v-flex>
+                        </v-flex>
+                      </v-layout>
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -82,9 +99,17 @@
                     <v-img aspect-ratio="1.7778" :src="'http://img.youtube.com/vi/' + content.youtubeMovieId[0] + '/0.jpg'">
                     </v-img>
                     <v-card-title>
-                      <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis">
-                      {{ content.stageName }}
-                      </span>
+                      <v-layout column>
+                        <v-flex x12 style="font-weight: bold; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">
+                            {{ content.stageName }}
+                        </v-flex>
+                        <v-flex style="font-size: 0.8em; overflow: hidden; white-space: nowrap; color: gray; text-overflow: ellipsis">
+                          日時： {{ formatDate(content.stageDate) }}
+                        </v-flex>
+                        <v-flex style="font-size: 0.8em; overflow: hidden; white-space: nowrap; color: gray; text-overflow: ellipsis">
+                          場所： {{ content.location }}
+                        </v-flex>
+                      </v-layout>
                     </v-card-title>
                   </v-card>
                 </v-hover>
@@ -139,7 +164,7 @@
                 {{ selectedPost.stageDescription }}
               </v-flex>
               <v-flex>
-                {{ formatDate }}
+                【日時】 {{ formatDate(selectedPost.stageDate) }}
               </v-flex>
               <v-flex>
                 【場所】 {{ selectedPost.location }}
@@ -195,22 +220,16 @@ export default {
     contentSelectedYear() {
       return this.output.pageContents.filter(el => el.yearGroup === this.selectedYear)
     },
-    formatDate() {
-      const rawDate = Number(this.selectedPost.stageDate.seconds) * 1000
-      const dateObj = new Date(rawDate)
-      const year = dateObj.getFullYear()
-      const month = dateObj.getMonth()
-      const day = dateObj.getDay()
-      const hour = dateObj.getHours()
-      let minute = dateObj.getMinutes()
-
-      if (minute < 10) {
-        minute = '0'+String(minute)
-      }
-      return '【日時】 ' + year + '年 ' + month + '月 ' + day + '日   ' + hour + ':' + minute + '〜'
-    },
   },
   methods: {
+    formatDate(stageDate) {
+      const rawDate = Number(stageDate.seconds) * 1000
+      const dateObj = new Date(rawDate)
+      const year = dateObj.getFullYear()
+      const month = dateObj.getMonth() + 1
+      const day = dateObj.getDate()
+      return year + '年 ' + month + '月 ' + day + '日'
+    },
     refreshWinSize(){
       this.windowSize =  { x: window.innerWidth, y: window.innerHeight }
     },
@@ -271,6 +290,7 @@ export default {
   async created() {
     contentsLoader.addLoadTarget(this.loader, loaderPresets.stageDetails)
     contentsLoader.addLoadTarget(this.loader, loaderPresets.stagesContents)
+    contentsLoader.addLoadTarget(this.loader, loaderPresets.nextStageDetail)
 
     this.output = await contentsLoader.startLoading(this.loader)
     this.$store.commit('setTransitionState', 'out')
@@ -297,7 +317,7 @@ export default {
 
 #StagesMediaContainer {
   position: relative;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: white;
   width: 100%;
 }
 
@@ -354,7 +374,7 @@ export default {
 
 #StagesTextContainer {
   padding: 2%;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: white;
   border-radius: 0px 0px 15px 15px;
 }
 
