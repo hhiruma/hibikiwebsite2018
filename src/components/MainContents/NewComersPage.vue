@@ -1,7 +1,9 @@
 <template>
-  <v-layout row justify-space-between id="NewComersContainer">
+  <v-layout row justify-space-between id="NewComersContainer"
+      :style="'height: ' + (windowSize.y-48) + 'px'">
       <template v-if="!loader.isLoading">
-        <v-flex xs5 align-start id="NewComersDesc">
+        <v-flex xs4 align-start id="NewComersDesc"
+          :style="'height: ' + (windowSize.y-48) + 'px; overflow: scroll'">
           <h1>新歓情報 {{output.newComersSettings.validYear }}</h1>
           <hr>
           <v-card v-for="event in output.newComersContent" dark
@@ -26,7 +28,8 @@
             {{ output.newComersSettings.message}}
         </v-flex>
 
-        <v-flex xs6 id="NewComersMedia">
+        <v-flex xs8 id="NewComersMedia"
+          :style="'height: ' + (windowSize.y-48) + 'px; overflow: scroll'">
           <v-layout column>
             <v-flex v-if="output.newComersSettings.billImgOrientation == 'horizontal'">
               <v-img
@@ -93,6 +96,7 @@ export default {
         return {
             imageModal: false,
             imageModalUrl: "",
+            windowSize: { x: 0, y: 0 },
             loader: {
                 isLoading: true,
                 targetParams: [],
@@ -100,7 +104,13 @@ export default {
             output: {} //newComersContents
         }
     },
+    mounted() {
+      this.refreshWinSize()
+    },
     methods: {
+        refreshWinSize(){
+          this.windowSize =  { x: window.innerWidth, y: window.innerHeight }
+        },
         setModalUrl(url) {
             this.imageModalUrl = url
         }
@@ -129,7 +139,6 @@ export default {
 
 <style scoped>
 #NewComersDesc {
-    border-radius: 10px;
     background-color: rgba(200, 200, 200, 0.5);
     box-sizing: border-box;
     padding: 30px;
