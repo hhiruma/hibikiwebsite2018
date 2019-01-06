@@ -77,5 +77,12 @@ export default {
     type: 'firestore',
     whichPath: 'doc',
     path: 'Contents/otherImagePaths'
+  },
+  contactBg: {
+    name: 'contactBg',
+    type: 'firestore',
+    whichPath: 'field',
+    path: 'Contents/Contact',
+    fields: ['bgUrl']
   }
 }
