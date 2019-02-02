@@ -6,7 +6,10 @@
     </v-toolbar-items>
     <v-spacer></v-spacer>
     <v-toolbar-items v-if="isMasterUser">
-      <v-toolbar-title>編集モード</v-toolbar-title>
+      <v-switch
+        :label="editModeLabel(editMode)"
+        v-model="editMode"
+        ></v-switch>
     </v-toolbar-items>
   </v-toolbar>
 </template>
@@ -19,7 +22,24 @@ import MenuBarElement from '@/components/MenuBarElement'
 
 export default {
   name: 'MenuBar',
+  methods: {
+    editModeLabel(val) {
+      if (val){
+        return '編集モードON '
+      } else {
+        return '編集モードOFF'
+      }
+    }
+  },
   computed: {
+    editMode: {
+      get () {
+        return this.$store.state.editMode
+      },
+      set (val) {
+        this.$store.commit('setEditMode', val)
+      }
+    },
     ...mapGetters([
       'isMasterUser'
     ]),

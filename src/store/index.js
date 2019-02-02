@@ -12,6 +12,7 @@ export default new Vuex.Store({
         nextPageSlug: "",
         currentPageIfShow: false,
         transitionState: "wait",
+        editMode: false,
         globalContents: {},  //expects 'pageSettings', 'masterUserId'
         appSize: {
             appWidth: -1,
@@ -19,6 +20,10 @@ export default new Vuex.Store({
         }
     },
     mutations: {
+        setEditMode (state, isEditMode) {
+          state.editMode = isEditMode
+          console.log(state.editMode)
+        },
         setResizeVals (state, payload){
             if (payload.mode === "width"){
                 state.appSize.appWidth = payload.val

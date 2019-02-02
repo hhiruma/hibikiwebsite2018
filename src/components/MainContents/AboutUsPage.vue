@@ -1,42 +1,20 @@
 <template>
   <v-container fluid id="AboutUsContainer" v-if="!loader.isLoading">
-      <!--
-    <template v-if="!loader.isLoading">
-      <v-flex xs3 id="AboutUsMenu">
-        <v-list dense style="border-radius: 10px; width: 100%">
-          <v-subheader>MENU</v-subheader>
-
-          <v-divider></v-divider>
-
-          <v-list-tile v-for="(pageContent, index) in output.pageContents"
-                       :key="pageContent.order"
-                       @click="$vuetify.goTo('#aboutUsEl'+index, '{duration: 300'); changeMenu(index)">
-            <v-list-tile-avatar>
-              <v-icon v-if="pageContent.order == selectedMenuOrder">arrow_right</v-icon>
-            </v-list-tile-avatar>
-            {{ pageContent.title }}
-          </v-list-tile>
-        </v-list>
+    <v-layout column>
+      <v-flex v-for="(pageContent, index) in output.pageContents"
+              class="AboutUsMainEl"
+              align-content-start
+              justify-end
+              >
+              <div :id="'aboutUsEl'+index">
+        <about-us-desc-el
+          @refreshData="refreshData"
+          :index="index"
+          :page-content="pageContent">
+        </about-us-desc-el>
+              </div>
       </v-flex>
-      -->
-
-      <!--
-      <v-flex xs9 id="AboutUsMain">
-      -->
-        <v-layout column>
-          <v-flex v-for="(pageContent, index) in output.pageContents"
-                  class="AboutUsMainEl"
-                  align-content-start
-                  justify-end
-                  >
-                  <div :id="'aboutUsEl'+index">
-            <about-us-desc-el
-              :index="index"
-              :page-content="pageContent">
-            </about-us-desc-el>
-                  </div>
-          </v-flex>
-        </v-layout>
+    </v-layout>
   </v-container>
 </template>
 
@@ -61,6 +39,17 @@ export default {
     changeMenu(index) {
       this.selectedMenuOrder = index
       //this.selectedMenuOrder = this.output.pageContents.filter(el => el.order === order)[0].order
+    },
+    async refreshData() {
+      this.loader = {
+        isLoading: true,
+        targetParams: []
+      }
+      this.output = {}
+
+      contentsLoader.addLoadTarget(this.loader, loaderPresets.aboutUsContents)
+      this.output = await contentsLoader.startLoading(this.loader)
+      this.$store.commit('setTransitionState', 'out')
     }
   },
   async created() {
