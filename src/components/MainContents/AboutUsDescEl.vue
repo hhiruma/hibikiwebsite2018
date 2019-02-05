@@ -231,8 +231,12 @@
 
 
   <template v-else>
+
+    <!-- Description area -->
     <v-flex xs5 align-content-end class="AboutUsDescArea">
       <v-flex class="AboutUsDesc">
+
+        <!-- Normal Mode -->
         <template v-if="!$store.state.editMode">
           <v-flex class="AboutUsDescTitle">
             {{ pageContent.title }}
@@ -240,6 +244,8 @@
           <hr> <br>
           {{ pageContent.content }}
         </template>
+
+        <!-- Edit Mode -->
         <template v-else>
           <v-flex style="font-size: 1.5em">
             <v-icon>edit</v-icon>  編集モード
@@ -248,40 +254,207 @@
           <v-text-field
             outline
             label="Title"
+            :background-color="ifEdited('title')"
             v-model="mPageContent.title">
           </v-text-field>
           <v-textarea
             outline auto-grow
             label="Text"
+            :background-color="ifEdited('content')"
             v-model="mPageContent.content" >
           </v-textarea>
           <v-layout justify-end>
-            <v-btn color="info">
+            <v-btn color="info" @click="uploadData(mPageContent)">
               更新
             </v-btn>
           </v-layout>
         </template>
       </v-flex>
     </v-flex>
-    <v-flex align-center x7>
-      <v-card class="AboutUsMediaArea">
-        <v-window v-model="pageContent.carouselState" max>
-          <v-window-item v-for="url in pageContent.imagePaths" :key="url">
-            <v-img :src='url' height=500 ></v-img>
-          </v-window-item>
-        </v-window>
 
-        <v-item-group dark v-model="pageContent.carouselState" mandatory>
-          <v-layout row justify-center class="AboutUsDescCarouselSelector">
-            <v-item v-for="i in pageContent.imagePaths.length" :key="i">
-              <div slot-scope="{ active, toggle }">
-                <v-btn :input-value="active" icon @click="toggle" >
-                  ●
-                </v-btn>
-              </div>
-            </v-item>
+    <v-flex align-center xs7>
+      <!-- Image area -->
+      <v-card class="AboutUsMediaArea">
+
+        <!-- Normal Mode -->
+        <template v-if="!$store.state.editMode">
+          <!-- Image carousel-->
+          <v-window v-model="pageContent.carouselState" max>
+            <v-window-item v-for="url in pageContent.imagePaths" :key="url">
+              <v-img :src='url' height=500 ></v-img>
+            </v-window-item>
+          </v-window>
+
+          <!-- carousel navigator -->
+          <v-item-group dark v-model="pageContent.carouselState" mandatory>
+            <v-layout row justify-center class="AboutUsDescCarouselSelector">
+              <v-item v-for="i in pageContent.imagePaths.length" :key="i">
+                <div slot-scope="{ active, toggle }">
+                  <v-btn :input-value="active" icon @click="toggle" >
+                    ●
+                  </v-btn>
+                </div>
+              </v-item>
+            </v-layout>
+          </v-item-group>
+        </template>
+
+
+        <!-- Edit Mode -->
+        <template v-else>
+          <v-layout fill-height width="100%" style="background: white">
+            <!-- Image display winodw -->
+            <v-flex style="height: 500px; border: black solid 1px;
+              background: lightblue; padding: 20px; color: white; overflow: scroll;">
+              <v-flex>
+
+                <v-flex>
+                  <v-layout row>
+                    <!-- Title -->
+                    <v-flex style="padding: 10px; color: black; font-size: 1.3em; font-weight: bold;">
+                      <v-icon>photo</v-icon> 画像データ
+                    </v-flex>
+
+                    <v-spacer/>
+
+                    <!-- update verification message  -->
+                    <v-flex style="padding: 10px; margin: 5px; background: rgba(255, 255, 255, 0.4); border-radius: 10px">
+                      <v-flex v-if="imagesOrderVerified" style="color: black;">
+                        <v-icon color="green">check_circle_outline</v-icon>
+                        順番は重複していません。更新可能です。
+                      </v-flex>
+                      <v-flex v-else style="color: red;">
+                        <v-icon color="red">check_circle_outline</v-icon>
+                        順番が重複している画像があります。
+                      </v-flex>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+
+                <hr>
+
+                <v-flex style="padding: 15px 0px;">
+                  <v-flex v-for="newImage, index in newImageEntries" :key="newImage.url" style="padding: 5px 0px;">
+                    <v-flex style="padding: 10px; background: rgba(255, 255, 255, 0.5); border-radius: 10px;" >
+                      <v-layout row>
+                        <!-- thumbnail area -->
+                        <v-flex xs4>
+                          <v-layout column fill-height>
+                            <v-img v-if="newImage.url !== ''" contain
+                              :src='newImage.url' aspect-ratio=1.77 style="border-radius: 10px;"/>
+                            <div v-else style="width: 100%; height: 56%; border: 1px black dashed; color: black;
+                              background: rgba(0, 0, 0, 0.1); padding: 10px; text-align: center;">
+                              画像なし
+                            </div>
+                          </v-layout>
+                        </v-flex>
+
+                        <!-- img info area -->
+                        <v-flex xs8 style="padding: 10px;">
+                          <v-layout row>
+                            <v-select dense
+                              label="順番"
+                              prepend-icon="format_list_numbered"
+                              @input="val => updateItem(val, index, 'order')"
+                              :value="newImageEntries[index].order"
+                              :items="Array.from(Array(newImageEntries.length).keys())"/>
+                            <v-select dense v-if="newImage.url === ''"
+                              label="形式"
+                              prepend-icon="format_list_numbered"
+                              @input="val => updateItem(val, index, 'uploadType')"
+                              :value="newImageEntries[index].uploadType"
+                              :items="uploadTypeNames" />
+                          </v-layout>
+
+                          <template v-if="index >= pageContent.imagePaths.length">
+                            <template v-if="newImageEntries[index].uploadType === 'ファイル'">
+                              <v-menu v-model="menu_test" offset-x
+                                      :close-on-content-click="false" :nudge-width="100">
+                                <v-btn @click="setImgUploadEntryIndex(index)"
+                                  slot="activator" color="indigo"> ファイルをアップロード </v-btn>
+
+                                <v-card style="padding: 10px;">
+                                  <v-layout v-if="imgUploadInfo.fileData === null"
+                                            style="margin: 10px 0px; background: lightblue; border-radius: 10px; height: 150px">
+                                    <v-flex style="padding: 10px;">
+                                      <v-layout fill-height justify-center>
+                                        <v-flex style="border: 1px red dotted;"
+                                                @dragover.prevent="checkDrag($event, 'new', true)"
+                                                @dragleave.prevent="checkDrag($event, 'new', false)"
+                                                @drop.prevent="onDrop" >
+                                          <v-layout fill-height justify-center align-center>
+                                            <v-flex style="text-align: center">
+                                              ここにファイルをドロップ<br>
+                                              または
+                                              <input @change="setImgUploadFile" id="fileSelectBtn" name="fileSelectBtn" type="file" style="display: none;"/>
+                                              <label for="fileSelectBtn">
+                                                <v-layout fill-height justify-center align-center row>
+                                                  <div class="fileSelectBtnLabel">
+                                                    ファイルを選択
+                                                  </div>
+                                                </v-layout>
+                                              </label>
+                                            </v-flex>
+                                          </v-layout>
+                                        </v-flex>
+                                      </v-layout>
+                                    </v-flex>
+                                  </v-layout>
+
+                                  <v-layout v-else
+                                            style="margin: 10px 0px; background: lightblue; border-radius: 10px; height: 150px">
+                                    <v-flex style="padding: 10px;">
+                                      <v-layout fill-height justify-center>
+                                        <v-flex>
+                                          <v-layout column fill-height justify-center align-center>
+                                            <div>
+                                              {{ imgUploadInfo.fileData.name }}
+                                            </div>
+                                          </v-layout>
+                                        </v-flex>
+                                      </v-layout>
+                                    </v-flex>
+                                  </v-layout>
+
+                                  <v-btn @click="uploadNewImage">
+                                    <v-icon>cloud_upload</v-icon>
+                                    アップロード
+                                  </v-btn>
+                                  <v-btn v-if="imgUploadInfo.fileData" @click="resetImgUploadInfo">
+                                    <v-icon>refresh</v-icon>
+                                    再選択
+                                  </v-btn>
+
+                                  <v-progress-linear v-model="uploadProgress">
+                                    </v-progress-linear>
+                                </v-card>
+                              </v-menu>
+
+                            </template>
+                            <v-text-field dense v-else
+                              label="画像URL" v-model="newImageEntries[index].url"/>
+                          </template>
+
+                          <v-checkbox dense
+                            label="削除する"
+                            v-model="newImageEntries[index].delete"
+                            prepend-icon="delete_forever">
+                          </v-checkbox>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-flex>
+                  <v-flex style="padding: 10px">
+                    <v-btn @click="addNewImg"
+                          style="background: rgba(255, 255, 255, 0.5); border-radius: 10px; width: 100%; margin: 0">
+                      <v-icon color="lightgray">add_circle</v-icon>
+                    </v-btn>
+                  </v-flex>
+                </v-flex>
+              </v-flex>
+            </v-flex>
           </v-layout>
-        </v-item-group>
+        </template>
       </v-card>
     </v-flex>
   </template>
