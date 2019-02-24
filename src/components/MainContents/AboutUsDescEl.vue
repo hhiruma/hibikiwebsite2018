@@ -7,6 +7,7 @@
         <about-us-desc-el-image-area
           :pageContent="pageContent"
           :newImageEntries="newImageEntries"
+          @removeNewImg="removeNewImg"
           @updateItem="updateItem"
           @addNewImg="addNewImg"
           @addNewImgUrl="addNewImgUrl"/>
@@ -102,6 +103,7 @@
           :pageContent="pageContent"
           :newImageEntries="newImageEntries"
           @updateItem="updateItem"
+          @removeNewImg="removeNewImg"
           @addNewImg="addNewImg"
           @addNewImgUrl="addNewImgUrl"/>
       </v-card>
@@ -158,17 +160,6 @@ export default {
       uploadProgress: 0
     }
   },
-  computed: {
-    imagesOrderVerified () {
-      for (const image of this.newImageEntries) {
-        console.log(this.newImageEntries.filter(el => el.order === image.order).length)
-        if (this.newImageEntries.filter(el => el.order === image.order).length !== 1){
-          return false
-        }
-      }
-      return true
-    }
-  },
   methods: {
     updateItem(item, index, keyName){
       let originalItem = this.newImageEntries[index]
@@ -181,7 +172,7 @@ export default {
       ]
     },
     addNewImg(){
-      const newImageEntries= this.newImageEntries.length
+      const newImageEntries = this.newImageEntries.length
       this.newImageEntries.push({
         'url': '',
         'delete': false,
@@ -219,38 +210,11 @@ export default {
           this.uploadFailed = true
         })
     },
-    async uploadNewImage() {
-      if (this.imgUploadInfo.entryIndex === -1){
-        console.error('ERROR: invalid img upload entry inex')
-        return
-      }
-      if (this.imgUploadInfo.fileData === null) {
-        console.error('ERROR: image upload target not specified')
-        return
-      }
-
-      const blob = new Blob([this.imgUploadInfo.fileData], { type:"image/jpeg"})
-      const fileName = this.imgUploadInfo.fileData.name
-      const uploadRef = storage.ref('images/aboutUs/').child(fileName)
-      this.uploadProgress = 0
-
-      let uploadTask = uploadRef.put(blob)
-
-      uploadTask.on('state_changed', snapshot => {
-          this.uploadProgress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      }, function() {},
-        () => {
-        uploadRef.getDownloadURL().then(url => {
-          this.newImageEntries[this.imgUploadInfo.entryIndex]['url'] = url
-        })
-      })
-    },
     addNewImgUrl(index, url){
       this.newImageEntries[index]['url'] = url
     },
-    setImgUploadFile(e) {
-      e.preventDefault()
-      this.imgUploadInfo.fileData = e.target.files[0]
+    removeNewImg(index) {
+      this.newImageEntries.splice(index, 1)
     },
     ifEdited(key) {
       if (this.mPageContent[key] === this.pageContent[key]){

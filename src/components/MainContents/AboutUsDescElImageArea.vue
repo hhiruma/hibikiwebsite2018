@@ -77,50 +77,40 @@
 
                   <!-- Img info area -->
                   <v-flex xs8 style="padding: 10px;">
-                    <v-layout row>
-                      <!-- State order  -->
-                      <v-select dense
-                        label="順番"
-                        prepend-icon="format_list_numbered"
-                        @input="val => updateItem(val, index, 'order')"
-                        :value="newImageEntries[index].order"
-                        :items="Array.from(Array(newImageEntries.length).keys())"/>
-                      <!-- State image type -->
-                      <v-select dense v-if="newImage.url === ''"
-                        label="形式"
-                        prepend-icon="format_list_numbered"
-                        @input="val => updateItem(val, index, 'uploadType')"
-                        :value="newImageEntries[index].uploadType"
-                        :items="uploadTypeNames" />
-                    </v-layout>
+                    <!-- State order  -->
+                    <v-select dense
+                      label="順番"
+                      prepend-icon="format_list_numbered"
+                      @input="val => updateItem(val, index, 'order')"
+                      :value="newImageEntries[index].order"
+                      :items="Array.from(Array(newImageEntries.length).keys())"/>
+
+                    <v-text-field dense
+                      v-if="newImage.url !== ''"
+                      label="画像のURL"
+                      prepend-icon="link"
+                      v-model="newImageEntries[index].url"/>
 
                     <!-- Put additional models for new entries -->
                     <template v-if="index >= pageContent.imagePaths.length">
-
-                      <!-- if image type is "file" -->
-                      <template v-if="newImageEntries[index].uploadType === 'ファイル'">
-                        <!-- Add file upload button  -->
-                        <image-uploader
-                          :imgUploadInfo="imgUploadInfo"
-                          :uploadProgress="uploadProgress"
-                          :index="index"
-                          @setImgUploadEntryIndex="setImgUploadEntryIndex"
-                          @checkDrag="checkDrag"
-                          @onDrop="onDrop"
-                          @setImgUploadFile="setImgUploadFile"
-                          @uploadNewImage="uploadNewImage"
-                          @resetImgUploadInfo="resetImgUploadInfo"/>
-
-                      </template>
-                      <v-text-field dense v-else
-                        label="画像URL" v-model="newImageEntries[index].url"/>
+                      <!-- Add file upload button  -->
+                      <image-uploader-new
+                        :mediaIndex="index"
+                        @editMediaData="editMediaData"
+                        />
+                      <v-btn dense @click="removeNewMedia(index)">
+                        <v-icon>delete_forever</v-icon>
+                        取り消し
+                      </v-btn>
                     </template>
 
-                    <v-checkbox dense
-                      label="削除する"
-                      v-model="newImageEntries[index].delete"
-                      prepend-icon="delete_forever">
-                    </v-checkbox>
+                    <template v-else>
+                      <v-checkbox dense
+                        label="削除する"
+                        v-model="newImageEntries[index].delete"
+                        prepend-icon="delete_forever">
+                      </v-checkbox>
+                    </template>
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -140,30 +130,17 @@
 
 <script>
 import storage from '@/firebase_storage'
-import imageUploader from '@/utils/imageUploader'
+import ImageUploaderNew from '@/utils/imageUploaderNew'
 
 export default {
   name: 'AboutUsDescElImageArea',
   props: ['pageContent', 'newImageEntries'],
   components: {
-    'image-uploader': imageUploader
-  },
-  data() {
-    return {
-      uploadTypeNames: ['ファイル', 'URL指定'],
-      imageUploadMenuShow: false,
-      imgUploadInfo: {
-        'entryIndex': -1,
-        'fileData': null
-      },
-      fileUploadDrag: null,
-      uploadProgress: 0
-    }
+    'image-uploader-new': ImageUploaderNew
   },
   computed: {
     imagesOrderVerified () {
       for (const image of this.newImageEntries) {
-        console.log(this.newImageEntries.filter(el => el.order === image.order).length)
         if (this.newImageEntries.filter(el => el.order === image.order).length !== 1){
           return false
         }
@@ -172,69 +149,17 @@ export default {
     }
   },
   methods: {
-    resetImgUploadInfo(){
-      this.imgUploadInfo = {
-        'entryIndex': -1,
-        'fileData': null
-      }
-    },
-    setImgUploadEntryIndex(index) {
-      this.imgUploadInfo = {
-        'entryIndex': index,
-        'fileData': null
-      }
-    },
-    setImgUploadFile(e) {
-      e.preventDefault()
-      this.imgUploadInfo.fileData = e.target.files[0]
-    },
-    onDrop(e, key='', image={}){
-      let fileList = event.targetfiles ? event.targetfiles : event.dataTransfer.files
-      if (fileList.length == 0){
-        console.error('ERROR: no file found')
-        return
-      }
-
-      this.imgUploadInfo.fileData = fileList[0]
-      return
-    },
     addNewImg(){
       this.$emit('addNewImg')
     },
     updateItem(item, index, keyName){
       this.$emit('updateItem', item, index, keyName)
     },
-    checkDrag(e, key, stat){
-      if (status && event.dataTransfer.types == "text/plain") {
-        return false
-      }
-      this.fileUploadDrag = status ? key : null
+    editMediaData(index, url) {
+      this.$emit('addNewImgUrl', index, url)
     },
-    async uploadNewImage() {
-      if (this.imgUploadInfo.entryIndex === -1){
-        console.error('ERROR: invalid img upload entry inex')
-        return
-      }
-      if (this.imgUploadInfo.fileData === null) {
-        console.error('ERROR: image upload target not specified')
-        return
-      }
-
-      const blob = new Blob([this.imgUploadInfo.fileData], { type:"image/jpeg"})
-      const fileName = this.imgUploadInfo.fileData.name
-      const uploadRef = storage.ref('images/aboutUs/').child(fileName)
-      this.uploadProgress = 0
-
-      let uploadTask = uploadRef.put(blob)
-
-      uploadTask.on('state_changed', snapshot => {
-          this.uploadProgress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      }, function() {},
-        () => {
-        uploadRef.getDownloadURL().then(url => {
-          this.$emit('addNewImgUrl', this.imgUploadInfo.entryIndex, url)
-        })
-      })
+    removeNewMedia(index) {
+      this.$emit('removeNewImg', index)
     }
   }
 }
