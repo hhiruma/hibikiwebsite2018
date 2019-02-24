@@ -49,6 +49,16 @@ export default {
     path: 'Contents/Stages/Posts',
     fields: [],
     callback: (function (outputObj) {
+      // Sort the page contents in order of stage date
+      outputObj.pageContents.sort((a, b) => {
+        const dateA = new Date(a.stageDate.year, a.stageDate.month, a.stageDate.day)
+        const dateB = new Date(b.stageDate.year, b.stageDate.month, b.stageDate.day)
+        if (dateA > dateB) return -1
+        if (dateA < dateB) return 1
+        else return 0
+      })
+
+      // Add array of available year groups
       outputObj.yearGroups = Array.from(new Set(outputObj.pageContents.map(el => el.yearGroup)))
       return outputObj
     }),

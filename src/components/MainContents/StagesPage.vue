@@ -1,48 +1,31 @@
 <template>
   <v-container fluid style="padding: 0">
+    <!-- background -->
     <v-layout style="position: fixed; width: 100%; height: 100vh; top: 0; z-index: -1;">
       <v-img src="https://pbs.twimg.com/media/DuXmJyjVsAI1MYY.jpg:large">
         <v-flex style="height: 100vh; width: 100%;  background: rgba(0, 0, 0, 0.5)"/>
       </v-img>
     </v-layout>
 
-    <!--
-    <v-layout :style="'width: 100%; height:'+ (windowSize.y-48)+'px'">
-    </v-layout>
-    -->
 
     <v-layout id="StagesContainer" :style="'min-height: '+ (windowSize.y-48)+'px'"
               justify-space-around align-content-space-around>
       <template v-if="!loader.isLoading">
-        <v-flex xs2 id="StagesMenuContainer">
-          <v-navigation-drawer permanent aboslute dense style="background: rgba(255, 255, 255, 0.8)">
-            <v-subheader>MENU</v-subheader>
-            <v-divider/>
-            <v-list-tile @click="moveToPage(0)" class="StagesMenuEl">
-              <v-list-tile-avatar>
-                <v-icon small>home</v-icon>
-              </v-list-tile-avatar>
-              トップ
-            </v-list-tile>
-            <v-divider/>
-            <v-list-tile class="StagesMenuEl"
-              v-for="yearGroup in output.yearGroups" :key="yearGroup"
-              @click="moveToPage(constVal.MENU, Number(yearGroup))">
-              <v-list-tile-avatar>
-                <v-icon v-if="yearGroup === selectedYear">
-                  arrow_right
-                </v-icon>
-              </v-list-tile-avatar>
-              {{ yearGroup }}年度
-            </v-list-tile>
-          </v-navigation-drawer>
-        </v-flex>
 
+        <stages-menu-container
+          :yearGroups="output.yearGroups"
+          :constVal="constVal"
+          :selectedYear="selectedYear"
+          @moveToPage="moveToPage"
+        />
+
+        <!-- Main Contents -->
         <v-flex xs10 id="StagesMenuContent" style="background: rgba(255, 255, 255, 0.8)">
+          <!-- Breadcrumbs -->
           <v-flex id="StagesMenuContentHeader">
             <v-breadcrumbs :items="breadCrumbItems" divider=">" style="padding: 0">
               <template slot="item" slot-scope="props">
-                <v-btn flat small @click="moveToPage(props.item.jumpTargetPageNum, -1)">{{ props.item.text }}</v-btn>
+                <v-btn flat small @click="moveToPage(props.item.jumpTargetPageNum, props.item.text)">{{ props.item.text }}</v-btn>
               </template>
               <v-icon slot="divider">chevron_right</v-icon>
             </v-breadcrumbs>
@@ -50,130 +33,85 @@
             <v-divider/>
           </v-flex>
 
+          <!-- TOP -->
           <template v-if="pagePos === constVal.TOP">
-            <v-flex>
-              <v-layout row>
-                <v-flex xs6 style="padding-right: 20px">
-                  <v-layout column>
-                    <v-flex style="margin-bottom: 20px;">
-                      <h1>舞台について</h1>
-                      <v-layout justify-end>
-                        <v-flex xs11>
-                          {{ output.stagesDetails}}
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                    <v-flex v-if="output.nextStageDetail.hasNextStage">
-                      <h1>次の舞台</h1>
-                      <v-layout justify-end>
-                        <v-flex xs11 >
-                          <h2> {{ output.nextStageDetail.name }} </h2>
-                          <v-flex>
-                            {{ output.nextStageDetail.description }}
-                          </v-flex>
-                          <v-flex>
-                            【日時】{{ output.nextStageDetail.location }}
-                          </v-flex>
-                          <v-flex>
-                            【場所】{{ output.nextStageDetail.date }}
-                          </v-flex>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-                <v-img xs6 src="https://pbs.twimg.com/media/DsfLiSfVYAAuZa4.jpg:large"/>
-              </v-layout>
-            </v-flex>
+            <stages-top
+             :stagesDetails="output.stagesDetails"
+             :mStageDetails="mStageDetails"/>
           </template>
 
+
+          <!-- MENU -->
           <template v-else-if="pagePos === constVal.MENU">
-            <v-layout justify-space-between wrap>
-              <v-flex v-for="content in contentSelectedYear" xs4 :key="content.postId"
-                style="padding: 10px;"
-                @click="moveToPage(constVal.CONTENT, content.postId)">
-                <v-hover>
-                  <v-card style="border-radius: 10px; cursor: pointer"
-                    slot-scope="{ hover }"
-                    :class="`elevation-${hover ? 12 : 2}`" >
-                    <v-img aspect-ratio="1.7778" :src="'http://img.youtube.com/vi/' + content.youtubeMovieId[0] + '/0.jpg'">
-                    </v-img>
-                    <v-card-title>
-                      <v-layout column>
-                        <v-flex x12 style="font-weight: bold; overflow: hidden; white-space: nowrap; text-overflow: ellipsis">
-                            {{ content.stageName }}
-                        </v-flex>
-                        <v-flex style="font-size: 0.8em; overflow: hidden; white-space: nowrap; color: gray; text-overflow: ellipsis">
-                          日時： {{ formatDate(content.stageDate) }}
-                        </v-flex>
-                        <v-flex style="font-size: 0.8em; overflow: hidden; white-space: nowrap; color: gray; text-overflow: ellipsis">
-                          場所： {{ content.location }}
-                        </v-flex>
-                      </v-layout>
-                    </v-card-title>
-                  </v-card>
-                </v-hover>
-              </v-flex>
-            </v-layout>
+            <stages-menu
+              :constVal="constVal"
+              :pageContents="output.pageContents"
+              :selectedYear="selectedYear"
+              @moveToPage="moveToPage"
+            />
           </template>
 
+
+          <!-- CONTENT -->
           <template v-else-if="pagePos === constVal.CONTENT">
-            <v-flex id="StagesMediaBigContainer">
-              <v-flex xs12>
-                <h1>{{ selectedPost.stageName }}</h1>
-              </v-flex>
-              <v-layout row>
-                <v-flex xs9 id="StagesMediaContainer">
-                  <iframe
-                    v-if="selectedMedia.type === 'video'"
-                    style="min-height: 250px"
-                    width="100%" height="100%"
-                    :src="'https://www.youtube.com/embed/'+selectedMedia.path"
-                    frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-                  </iframe>
-                  <div
-                    v-else-if="selectedMedia.type === 'picture'"
-                    class="bgCoverSettings"
-                    :style="'background-image: url('+selectedMedia.path+')'"
-                    width="100%" height="100%">
-                  </div>
-                </v-flex>
-                <v-flex xs3 id="StagesMediaSelector">
-                  <div style="position: absolute; top: 0; width: 100%">
-                    <v-flex class="StagesMediaSelectorEl bgCoverSettings"
-                      v-for="movieId in selectedPost.youtubeMovieId" :key="movieId"
-                      :style="'background-image: url(http://img.youtube.com/vi/' + movieId + '/0.jpg)'"
-                      :class="{StagesMediaSelectorElSelected: movieId === selectedMedia.path}"
-                      @click="changeMedia('video', movieId)">
-                      <v-icon x-large color="red"> play_circle_filled_white </v-icon>
-                    </v-flex>
-                    <v-flex class="StagesMediaSelectorEl bgCoverSettings"
-                      v-for="picturePath in selectedPost.picturePath" :key="picturePath"
-                      v-if="picturePath !== ''"
-                      :style="'background-image: url('+picturePath+')'"
-                      :class="{StagesMediaSelectorElSelected: picturePath === selectedMedia.path}"
-                      @click="changeMedia('picture', picturePath)">
-                    </v-flex>
-                  </div>
-                </v-flex>
-              </v-layout>
-            </v-flex>
-
-            <v-flex id="StagesTextContainer">
-              <v-flex>
-                {{ selectedPost.stageDescription }}
-              </v-flex>
-              <v-flex>
-                【日時】 {{ formatDate(selectedPost.stageDate) }}
-              </v-flex>
-              <v-flex>
-                【場所】 {{ selectedPost.location }}
-              </v-flex>
-            </v-flex>
+            <stages-content
+              :pageContents="output.pageContents"
+              :updateList="updateList"
+              @addToUpdateList="addToUpdateList"
+            />
           </template>
+
+          <!-- EDITOR -->
+          <template v-else-if="pagePos === constVal.EDITOR">
+            <stages-editor
+              v-if="$store.state.editMode"
+              :updateList="updateList"
+              :updateButtonLabel="updateButtonLabel"
+              @updateData="updateData"
+              @deleteFromUpdateList="deleteFromUpdateList"
+            />
+          </template>
+
         </v-flex>
       </template>
     </v-layout>
+
+    <!-- Message snackbar -->
+    <v-snackbar
+      v-model="updateListTrigger.success"
+      :right="true"
+      :timeout="3000"
+      >
+      <v-icon color="green">check_circle_outline</v-icon>
+      更新リストに追加完了
+    </v-snackbar>
+
+    <v-snackbar
+      v-model="updateListTrigger.failed"
+      :right="true"
+      :timeout="3000"
+      >
+      <v-icon color="red">check_circle_outline</v-icon>
+      更新リスト追加失敗
+    </v-snackbar>
+
+    <v-snackbar
+      v-model="updateTrigger.success"
+      :right="true"
+      :timeout="3000"
+      >
+      <v-icon color="green">check_circle_outline</v-icon>
+      更新完了
+    </v-snackbar>
+
+    <v-snackbar
+      v-model="updateTrigger.failed"
+      :right="true"
+      :timeout="3000"
+      >
+      <v-icon color="red">check_circle_outline</v-icon>
+      更新失敗
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -182,6 +120,11 @@ import firestore from '@/firebase_firestore'
 import storage from '@/firebase_storage'
 import { mapState } from 'vuex'
 import { contentsLoader, loaderPresets } from '@/utils'
+import StagesTop from '@/components/MainContents/StagesTop'
+import StagesMenu from '@/components/MainContents/StagesMenu'
+import StagesContent from '@/components/MainContents/StagesContent'
+import StagesMenuContainer from '@/components/MainContents/StagesMenuContainer'
+import StagesEditor from '@/components/MainContents/StagesEditor'
 
 export default {
   name: 'StagesPage',
@@ -197,7 +140,8 @@ export default {
       constVal: {
         TOP: 0,
         MENU: 1,
-        CONTENT: 2
+        CONTENT: 2,
+        EDITOR: 3
       },
       breadCrumbItems: [{
         text: 'トップ',
@@ -210,8 +154,26 @@ export default {
         isLoading: true,
         targetParams: [],
       },
+      mStageDetails: {},
+      updateList: [],
+      updateListTrigger: {
+        'success': false,
+        'failed': false
+      },
+      updateTrigger: {
+        'success': false,
+        'failed': false
+      },
+      updateButtonLabel: "更新する",
       output: {} //expect 'stageDetails', 'pageContents', 'yearGroups'
     }
+  },
+  components: {
+    'stages-top': StagesTop,
+    'stages-menu': StagesMenu,
+    'stages-content': StagesContent,
+    'stages-menu-container': StagesMenuContainer,
+    'stages-editor': StagesEditor
   },
   mounted() {
     this.refreshWinSize()
@@ -223,18 +185,103 @@ export default {
   },
   methods: {
     formatDate(stageDate) {
-      const rawDate = Number(stageDate.seconds) * 1000
-      const dateObj = new Date(rawDate)
-      const year = dateObj.getFullYear()
-      const month = dateObj.getMonth() + 1
-      const day = dateObj.getDate()
+      const year = stageDate.year
+      const month = stageDate.month
+      const day = stageDate.day
       return year + '年 ' + month + '月 ' + day + '日'
     },
     refreshWinSize(){
       this.windowSize =  { x: window.innerWidth, y: window.innerHeight }
     },
+    postDifference(newData, origData) {
+      let editedKeys = []
+
+      // Compare easy data
+      const easilyComparableKeys = ['stageName', 'stageDescription', 'location', 'yearGroup']
+      for (let key of easilyComparableKeys) {
+        if (newData[key] !== origData[key]) {
+          editedKeys.push(key)
+        }
+      }
+
+      // Compare date
+      if (newData.stageDate.year  !== origData.stageDate.year  ||
+          newData.stageDate.month !== origData.stageDate.month ||
+          newData.stageDate.day   !== origData.stageDate.day     ){
+        editedKeys.push('stageDate')
+      }
+
+
+      console.log(newData.mediaData.length)
+      console.log(origData.mediaData.length)
+      // Compare media
+      if (newData.mediaData.length !== origData.mediaData.length){
+        editedKeys.push('mediaData')
+      } else {
+        for (let i=0; i<newData.mediaData.length; i++){
+          if(newData.mediaData[i].path !== origData.mediaData[i].path ||
+            newData.mediaData[i].type !== origData.mediaData[i].type) {
+            editedKeys.push('mediaData')
+            break
+          }
+        }
+      }
+
+      return editedKeys
+    },
+    addToUpdateList(newData){
+      const newDataId = newData.postId
+
+      // If postId already exists in list
+      let alreadyEdited = false
+      let editedIndex = -1
+      if (this.updateList.length) {
+        for (let [index, entry] of this.updateList.entries()){
+          if (entry.postId === newDataId) {
+            alreadyEdited = true
+            editedIndex = index
+          }
+        }
+      }
+
+      if (alreadyEdited) {
+        this.updateList.splice(editedIndex, 1)
+      }
+
+
+      const originalDataFilter = this.output.pageContents.filter(el => el.postId === newDataId)
+
+      if (!originalDataFilter.length) {
+        console.log('New data')
+      }
+      const originalData = originalDataFilter[0]
+
+      const editedKeys = this.postDifference(newData, originalData)
+
+      if (!editedKeys.length) {
+        if (alreadyEdited) {
+          this.updateListTrigger.success = true
+        } else {
+          this.updateListTrigger.failed = true
+        }
+        return
+      }
+
+      this.updateList.push({
+        'postId': newDataId,
+        newData,
+        originalData,
+        editedKeys,
+      })
+      this.updateListTrigger.success = true
+    },
+    deleteFromUpdateList(index) {
+      this.updateList.splice(index, 1)
+    },
     moveToPage(pos, param=null){
+      // Set next page position
       this.pagePos = pos
+
       if(pos === this.constVal.TOP){
         this.selectedYear = 0
         while(this.breadCrumbItems.length > this.constVal.TOP+1){
@@ -242,15 +289,21 @@ export default {
         }
 
       } else if (pos === this.constVal.MENU) {
-        if (!isNaN(param)){
-          if(param !== -1){
-            this.selectedYear = param
-          }
+        if (!isNaN(param) && param !== -1){
+          // If next year selected
+          this.selectedYear = param
+        } else if (!isNaN(param.split('年度')[0])) {
+          this.selectedYear = Number(param.split('年度')[0])
         } else {
+          // If not selected, abort move to MENU and go back to TOP
           this.pagePost = this.constVal.TOP
-          moveToPage(this.constVal.TOP)
+          this.moveToPage(this.constVal.TOP)
+          return
         }
-        this.selectedPost = {}
+
+        // Reset isSelected values
+        this.output.pageContents.map(el => el.isSelected = false)
+
         while(this.breadCrumbItems.length > this.constVal.MENU){
           this.breadCrumbItems.pop()
         }
@@ -262,16 +315,25 @@ export default {
         })
 
       } else if (pos === this.constVal.CONTENT) {
-        this.selectedPost = this.output.pageContents.filter(el => el.postId === param)[0]
-        if (this.selectedPost === null){
-          moveToPage(this.constVal.MENU, -1)
-        }
-        if (this.selectedPost.youtubeMovieId.length > 0){
-          this.changeMedia("video", this.selectedPost.youtubeMovieId[0])
-        } else if (this.selectedPost.picturePath.length > 0){
-          this.changeMedia("picture", this.selectedPost.picturePath[0])
+        // Set a single post to isSelected === true
+        //   Using the postId value given from param
+        let selectedPost
+        if (this.output.pageContents.filter(el => el.postId === param).length){
+          for (const [index, post] of this.output.pageContents.entries()){
+            if (post.postId === param) {
+              this.output.pageContents[index].isSelected = true
+              selectedPost = this.output.pageContents[index]
+            } else {
+              this.output.pageContents[index].isSelected = false
+            }
+          }
         } else {
-          console.log("else")
+          console.error('ERROR: Post with specified postId "' + param + '" does not exist.')
+        }
+
+        // If selectedPost does not exist
+        if (selectedPost === null){
+          moveToPage(this.constVal.MENU, -1)
         }
 
         this.breadCrumbItems.push({
@@ -280,11 +342,52 @@ export default {
             href: "",
             jumpTargetPageNum: this.constVal.CONTENT
         })
+      } else if (pos === this.constVal.EDITOR){
+        this.selectedYear = 0
+        while(this.breadCrumbItems.length > this.constVal.TOP+1){
+          this.breadCrumbItems.pop()
+        }
+
+        this.breadCrumbItems.push({
+          text: "編集",
+          disabled: false,
+          href: "",
+          jumpTargetPageNum: this.constVal.EDITOR
+        })
       }
     },
-    changeMedia(type, path){
-      this.selectedMedia.type = type
-      this.selectedMedia.path = path
+    async updateData() {
+      this.updateButtonLabel = "更新中..."
+      Promise.resolve()
+        .then(() => {
+          return Promise.all(this.updateList.map(entry => {
+            return new Promise((fulfilled, rejected) => {
+              firestore
+                .collection('Contents/Stages/Posts')
+                .doc(entry.postId)
+                .set(entry.newData)
+                .then(() => {
+                  fulfilled()
+                })
+            })
+          }))
+        })
+        .then(() => {
+          this.updateTrigger.success = true
+          this.updateButtonLabel = "更新する"
+          this.refreshData()
+        })
+        .catch((err) => {
+          console.error(err)
+          this.updateTrigger.failed = true
+        })
+    },
+    async refreshData() {
+      this.updateList = []
+      this.output = await contentsLoader.startLoading(this.loader)
+      this.output.pageContents.map((el) => {
+        el['isSelected'] = false
+      })
     }
   },
   async created() {
@@ -294,18 +397,20 @@ export default {
 
     this.output = await contentsLoader.startLoading(this.loader)
     this.$store.commit('setTransitionState', 'out')
+
+    this.output.pageContents.map((el) => {
+      el['isSelected'] = false
+    })
+
+    this.mStageDetails = {
+      'title': '舞台について',
+      'content': this.output.stagesDetails
+    }
   }
 }
 </script>
 
 <style scoped>
-.StagesMenuEl {
-  font-size: 0.8em;
-}
-.StagesMenuEl:hover {
-  background-color: rgba(0, 0, 0, 0.1)
-}
-
 #StagesMenuContent {
   box-sizing: border-box;
   padding: 30px;
@@ -315,9 +420,9 @@ export default {
   margin-bottom: 30px;
 }
 
-#StagesMediaContainer {
+#StagesMediaContainer, #StagesMediaContainerE {
   position: relative;
-  background-color: white;
+  background-color: rgba(50, 50, 50, 0.8);
   width: 100%;
 }
 
