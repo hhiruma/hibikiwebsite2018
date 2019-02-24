@@ -112,10 +112,17 @@
 
                 <!-- if delete -->
                 <v-checkbox dense
+                  v-if="index < pageContents.filter(el => el.isSelected)[0].mediaData.length"
                   label="削除する"
                   v-model="mPostContent.mediaData[index].delete"
                   prepend-icon="delete_forever">
                 </v-checkbox>
+                <v-btn
+                  v-else
+                  dense @click="removeNewMedia(index)">
+                  <v-icon>delete_forever</v-icon>
+                  取り消し
+                </v-btn>
               </v-flex>
 
               <!-- Right hand side -->
@@ -129,6 +136,11 @@
                   v-if="media.type === 'video'"
                   prepend-icon="link"
                   label="Youtube埋め込みリンク"
+                  v-model="media.path"/>
+                <v-text-field
+                  v-else
+                  prepend-icon="link"
+                  label="画像のURL"
                   v-model="media.path"/>
 
               </v-flex>
@@ -154,11 +166,10 @@
                 </template>
 
                 <!-- if delete -->
-                <v-checkbox dense
-                  label="削除する"
-                  v-model="mPostContent.mediaData[index].delete"
-                  prepend-icon="delete_forever">
-                </v-checkbox>
+                <v-btn dense @click="removeNewMedia(index)">
+                  <v-icon>delete_forever</v-icon>
+                  取り消し
+                </v-btn>
               </v-flex>
 
               <!-- Right hand side -->
@@ -177,7 +188,11 @@
                   prepend-icon="link"
                   label="Youtube埋め込みリンク"
                   v-model="media.path"/>
-                <!-- 形式未実装-->
+                <v-text-field
+                  v-else-if="media.type === 'image' && media.path !== ''"
+                  prepend-icon="link"
+                  label="画像のURL"
+                  v-model="media.path"/>
                 <image-uploader-new
                   v-if="media.type === 'image'"
                   :mediaIndex="index"
@@ -348,6 +363,9 @@ export default {
         "order": this.mPostContent.mediaData.length,
         "delete": false
       })
+    },
+    removeNewMedia(index) {
+      this.mPostContent.mediaData.splice(index, 1)
     },
     editMediaData(index, url){
       this.mPostContent.mediaData[index].path = url
