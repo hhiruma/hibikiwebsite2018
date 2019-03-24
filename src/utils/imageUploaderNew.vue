@@ -130,7 +130,7 @@ import storage from '@/firebase_storage'
 
 export default {
   name: 'ImageUploaderNew',
-  props: ['mediaIndex'],
+  props: ['mediaIndex', 'extraRefData'],
   data() {
     return {
       openImageUpdater: false,
@@ -187,7 +187,10 @@ export default {
       })
     },
     editMediaData(){
-      this.$emit('editMediaData', this.mediaIndex, this.fileDataUrl)
+      console.log(this.mediaIndex)
+      console.log(this.fileDataUrl)
+      console.log(this.extraRefData)
+      this.$emit('editMediaData', this.mediaIndex, this.fileDataUrl, this.extraRefData)
     }
   }
 }

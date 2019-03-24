@@ -11,6 +11,28 @@ export default {
           }
       }
   },
+  masterUserId: {
+    name: 'masterUserId',
+    type: 'firestore',
+    whichPath: 'field',
+    path: 'Settings/Users',
+    fields: ['masterUserId']
+  },
+  bgUrl: {
+    name: 'bgUrl',
+    type: 'firestore',
+    whichPath: 'doc',
+    path: 'Contents/Main/background/image_paths'
+  },
+  otherImagePaths: {
+    name: 'otherImagePaths',
+    type: 'firestore',
+    whichPath: 'doc',
+    path: 'Contents/otherImagePaths'
+  },
+
+
+
   aboutUsContents: {
     name: 'pageContents',
     type: 'firestore',
@@ -29,6 +51,9 @@ export default {
       }
     }
   },
+
+
+
   stageDetails: {
     name: 'stagesDetails',
     type: 'firestore',
@@ -69,31 +94,20 @@ export default {
       }
     }
   },
-  masterUserId: {
-    name: 'masterUserId',
-    type: 'firestore',
-    whichPath: 'field',
-    path: 'Settings/Users',
-    fields: ['masterUserId']
-  },
+
+
+
   newComersSettings: {
     name: 'newComersSettings',
     type: 'firestore',
     whichPath: 'doc',
     path: 'Contents/NewComers'
   },
-  bgUrl: {
-    name: 'bgUrl',
-    type: 'firestore',
-    whichPath: 'doc',
-    path: 'Contents/Main/background/image_paths'
-  },
-  otherImagePaths: {
-    name: 'otherImagePaths',
-    type: 'firestore',
-    whichPath: 'doc',
-    path: 'Contents/otherImagePaths'
-  },
+  //newComersContent: {},
+  //newComresMedia: {},
+
+
+
   contactBg: {
     name: 'contactBg',
     type: 'firestore',

@@ -82,6 +82,7 @@ export default {
             console.error('Trying to load from unexpected location.')
         }
 
+        console.log(responseArray)
         return responseArray
     },
     checkLoaderShape(loader){
