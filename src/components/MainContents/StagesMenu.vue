@@ -1,5 +1,5 @@
 <template>
-<v-layout justify-space-between wrap>
+<v-layout justify-start wrap>
   <v-flex v-for="content in contentsInSelectedYear" xs4 :key="content.postId"
     style="padding: 10px;"
     @click="moveToPage(constVal.CONTENT, content.postId)">

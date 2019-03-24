@@ -23,6 +23,16 @@
 
       <v-divider/>
 
+      <v-list-tile v-if="$store.state.editMode"
+        @click="moveToPage(constVal.NEWPOST)" class="StagesMenuEl">
+        <v-list-tile-avatar>
+          <v-icon small>add_to_queue</v-icon>
+        </v-list-tile-avatar>
+        新規投稿
+      </v-list-tile>
+
+      <v-divider/>
+
       <v-list-tile class="StagesMenuEl"
         v-for="yearGroup in yearGroups" :key="yearGroup"
         @click="moveToPage(constVal.MENU, Number(yearGroup))">

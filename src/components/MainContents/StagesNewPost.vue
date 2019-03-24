@@ -1,77 +1,5 @@
 <template>
-<!-- Normal mode -->
-<v-flex v-if="!$store.state.editMode"
-  id="StagesMediaBigContainer">
-  <v-flex xs12>
-    <h1>{{ mPostContent.stageName }}</h1>
-  </v-flex>
-  <v-layout row>
-    <!-- Media Container -->
-    <v-flex xs9 id="StagesMediaContainer">
-      <!-- Video -->
-      <iframe
-        v-if="selectedMedia.type === 'video'"
-        style="min-height: 250px"
-        width="100%" height="100%"
-        :src="selectedMedia.path"
-        frameborder="0" allowfullscreen
-        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture">
-      </iframe>
-
-      <!-- Image -->
-      <div
-        v-else-if="selectedMedia.type === 'image'"
-        class="bgCoverSettings"
-        :style="'background-image: url(' + selectedMedia.path + ')'"
-        width="100%" height="100%">
-      </div>
-
-      <div v-else>
-        kfdjfkdjfkj
-      </div>
-    </v-flex>
-
-    <!-- Media selector -->
-    <v-flex xs3 id="StagesMediaSelector">
-      <div style="position: absolute; top: 0; width: 100%">
-        <template v-for="media in mPostContent.mediaData">
-          <v-flex v-if="media.type === 'video'"
-            class="StagesMediaSelectorEl bgCoverSettings"
-            :class="{StagesMediaSelectorElSelected: media.path === selectedMedia.path}"
-            :style="'background-image: url(http://img.youtube.com/vi/' + getYoutubeId(media.path) + '/0.jpg)'"
-            @click="changeMedia('video', media.path)">
-            <v-icon x-large color="red"> play_circle_filled_white </v-icon>
-          </v-flex>
-          <v-flex v-else
-            class="StagesMediaSelectorEl bgCoverSettings"
-            :class="{StagesMediaSelectorElSelected: media.path === selectedMedia.path}"
-            :style="'background-image: url('+ media.path +')'"
-            @click="changeMedia('image', media.path)">
-          </v-flex>
-        </template>
-      </div>
-    </v-flex>
-  </v-layout>
-
-  <v-flex id="StagesTextContainer">
-    <v-flex>
-      {{ mPostContent.stageDescription }}
-    </v-flex>
-    <v-flex>
-      【日時】 {{ formatDate(mPostContent.stageDate) }}
-    </v-flex>
-    <v-flex>
-      【場所】 {{ mPostContent.location }}
-    </v-flex>
-  </v-flex>
-</v-flex>
-
-
-
-<!-- Edit mode -->
-<v-flex v-else
-  id="StagesMediaBigContainer">
-
+<v-flex>
   <!-- Stage Name -->
   <v-layout row xs12 justify-space-between>
     <v-flex xs9>
@@ -88,7 +16,6 @@
       </v-layout>
     </v-flex>
   </v-layout>
-
 
   <!-- Media Container -->
   <v-layout row>
@@ -109,20 +36,6 @@
                 <v-img aspect-ratio="1.77"
                   v-else
                   :src="media.path"/>
-
-                <!-- if delete -->
-                <v-checkbox dense
-                  v-if="index < pageContents.filter(el => el.isSelected)[0].mediaData.length"
-                  label="削除する"
-                  v-model="mPostContent.mediaData[index].delete"
-                  prepend-icon="delete_forever">
-                </v-checkbox>
-                <v-btn
-                  v-else
-                  dense @click="removeNewMedia(index)">
-                  <v-icon>delete_forever</v-icon>
-                  取り消し
-                </v-btn>
               </v-flex>
 
               <!-- Right hand side -->
@@ -233,7 +146,6 @@
     </v-flex>
   </v-layout>
 
-
   <!-- Stage Description Area -->
   <v-flex id="StagesTextContainer">
     <!-- Description -->
@@ -286,48 +198,38 @@
     </v-layout>
   </v-flex>
 </v-flex>
-
 </template>
 
-<script>
-import ImageUploaderNew from '@/utils/imageUploaderNew'
 
+<script>
 export default {
-  name: 'StagesContent',
-  props: ['pageContents', 'updateList'],
-  components: {
-    'image-uploader-new': ImageUploaderNew
-  },
+  name: 'StagesNewPost',
   data() {
     return {
-      selectedMedia: {
-        path: "",
-        type: ""
+      mPostContent: {
+        'location': '',
+        'mediaData': [],
+        'postId': '',
+        'stageDate': {
+          'year': 0,
+          'month': 0,
+          'day': 0
+        },
+        'status': 'published',
+        'yearGroup': 0
       },
       mediaTypeToJp: {
         'video': '動画',
         'image': '写真'
       },
-      mPostContent: {}
+      selectedMedia: {
+        path: "",
+        type: ""
+      },
     }
   },
   methods: {
-    formatDate(stageDate) {
-      const year = stageDate.year
-      const month = stageDate.month
-      const day = stageDate.day
-      return year + '年 ' + month + '月 ' + day + '日'
-    },
-    changeMedia(type, path){
-      this.selectedMedia = {
-        type, path
-      }
-    },
-    getYoutubeId(moviePath) {
-      const splitted = moviePath.split('/')
-      return splitted[splitted.length-1]
-    },
-    addToUpdateList(){
+    addToUpdateList() {
       // Reorder media data
       this.mPostContent.mediaData
         .sort((a, b) => {
@@ -335,13 +237,6 @@ export default {
             if(a.order > b.order) return 1;
             return 0;
         })
-
-      // Remove designated media
-      for (let [index, media] of this.mPostContent.mediaData.entries()) {
-        if (media.delete || media.path === '') {
-          this.mPostContent.mediaData.splice(index, 1)
-        }
-      }
 
       let formattedContent = JSON.parse(JSON.stringify(this.mPostContent))
 
@@ -353,10 +248,25 @@ export default {
         }
       }
 
+      const S="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+      const N=16
+      const newPostId = Array.from(Array(N)).map(()=>S[Math.floor(Math.random()*S.length)]).join('')
+
+      formattedContent.postId = newPostId
       formattedContent.yearGroup = Number(formattedContent.yearGroup)
-      console.log(formattedContent.mediaData)
+      console.log(formattedContent)
 
       this.$emit('addToUpdateList', formattedContent)
+    },
+    getYoutubeId(moviePath) {
+      const splitted = moviePath.split('/')
+      return splitted[splitted.length-1]
+    },
+    removeNewMedia(index) {
+      this.mPostContent.mediaData.splice(index, 1)
+    },
+    editMediaData(index, url){
+      this.mPostContent.mediaData[index].path = url
     },
     addNewMedia() {
       this.mPostContent.mediaData.push({
@@ -365,74 +275,26 @@ export default {
         "order": this.mPostContent.mediaData.length,
         "delete": false
       })
-    },
-    removeNewMedia(index) {
-      this.mPostContent.mediaData.splice(index, 1)
-    },
-    editMediaData(index, url){
-      this.mPostContent.mediaData[index].path = url
     }
   },
-  created() {
-    // Initialize first selected media
-    let selectedPost = this.pageContents.filter(el => el.isSelected)[0]
-    this.selectedMedia = selectedPost.mediaData[0]
-
-    let alreadyEdited = false
-    if (this.updateList.length){
-      for (let entry of this.updateList){
-        if (entry.postId === selectedPost.postId) {
-          alreadyEdited = true
-        }
-      }
-    }
-
-    if (alreadyEdited){
-      this.mPostContent = this.updateList.filter(el => el.postId === selectedPost.postId)[0].newData
-    } else {
-      this.mPostContent = JSON.parse(JSON.stringify(selectedPost))
-    }
-
-    // Add order property to media data for editing purpose
-    for (let i=0; i<this.mPostContent.mediaData.length; i++){
-      this.mPostContent.mediaData[i]['order'] = Number(i)
-      this.mPostContent.mediaData[i]['delete'] = false
-    }
+  create() {
   }
 }
 </script>
 
-<style scoped>
+
+<style>
 .bgCoverSettings{
   background-size: cover;
   background-repeat: none;
   background-position: center center;
 }
-
-#StagesMediaContainer, #StagesMediaContainerE {
+#StagesMediaContainerE{
   position: relative;
   background-color: rgba(50, 50, 50, 0.8);
   width: 100%;
-}
-
-#StagesMediaContainerE {
   padding: 25px;
 }
-
-#StagesMediaContainer:before {
-  content: "";
-  display: block;
-  padding-top: 56.25%;
-}
-
-#StagesMediaContainer iframe, #StagesMediaContainer div{
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-}
-
 #StagesMediaSelector {
   position: relative;
   width: 100%;
@@ -463,6 +325,7 @@ export default {
   background-blend-mode: screen;
   background-color: rgba(255, 255, 255, 0.4);
 }
+
 
 #StagesTextContainer {
   padding: 2%;

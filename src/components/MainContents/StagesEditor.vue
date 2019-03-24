@@ -32,24 +32,38 @@
 
               <v-flex xs9 style="padding: 20px">
                 <v-expansion-panel expand>
-                  <v-expansion-panel-content v-for="key in entry.editedKeys" :key="key">
-                    <div slot="header"> {{ editKeyToJp[key] }} </div>
-                    <v-layout row style="background: rgba(230, 230, 230, 0.5); padding: 15px">
-                      <stages-editor-checker-el
-                        :data="entry.originalData"
-                        :editedKey="key"
-                        title="元の投稿"
-                      />
+                  <template v-if="entry.editKeys !== null">"
+                    <v-expansion-panel-content v-for="key in entry.editedKeys" :key="key">
+                      <div slot="header"> {{ editKeyToJp[key] }} </div>
+                      <v-layout row style="background: rgba(230, 230, 230, 0.5); padding: 15px">
+                        <stages-editor-checker-el
+                          :data="entry.originalData"
+                          :editedKey="key"
+                          title="元の投稿"
+                        />
 
-                      <v-icon>arrow_right_alt</v-icon>
+                        <v-icon>arrow_right_alt</v-icon>
 
-                      <stages-editor-checker-el
-                        :data="entry.newData"
-                        :editedKey="key"
-                        title="新しい投稿"
-                      />
-                    </v-layout>
-                  </v-expansion-panel-content>
+                        <stages-editor-checker-el
+                          :data="entry.newData"
+                          :editedKey="key"
+                          title="新しい投稿"
+                        />
+                      </v-layout>
+                    </v-expansion-panel-content>
+                  </template>
+                  <template v-else>
+                    <v-expansion-panel-content v-for="key in entry.editedKeys" :key="key">
+                      <div slot="header"> {{ editKeyToJp[key] }} </div>
+                      <v-layout row style="background: rgba(230, 230, 230, 0.5); padding: 15px">
+                        <stages-editor-checker-el
+                          :data="entry.newData"
+                          :editedKey="key"
+                          title="新しい投稿"
+                        />
+                      </v-layout>
+                    </v-expansion-panel-content>
+                  </template>
                 </v-expansion-panel>
               </v-flex>
             </v-layout>

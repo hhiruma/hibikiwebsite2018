@@ -72,6 +72,14 @@
             />
           </template>
 
+          <!-- NEWPOST -->
+          <template v-else-if="pagePos === constVal.NEWPOST">
+            <stages-new-post
+              v-if="$store.state.editMode"
+              @addToUpdateList="addToUpdateList"
+            />
+          </template>
+
         </v-flex>
       </template>
     </v-layout>
@@ -125,6 +133,7 @@ import StagesMenu from '@/components/MainContents/StagesMenu'
 import StagesContent from '@/components/MainContents/StagesContent'
 import StagesMenuContainer from '@/components/MainContents/StagesMenuContainer'
 import StagesEditor from '@/components/MainContents/StagesEditor'
+import StagesNewPost from '@/components/MainContents/StagesNewPost'
 
 export default {
   name: 'StagesPage',
@@ -141,7 +150,8 @@ export default {
         TOP: 0,
         MENU: 1,
         CONTENT: 2,
-        EDITOR: 3
+        EDITOR: 3,
+        NEWPOST: 4
       },
       breadCrumbItems: [{
         text: 'トップ',
@@ -173,7 +183,8 @@ export default {
     'stages-menu': StagesMenu,
     'stages-content': StagesContent,
     'stages-menu-container': StagesMenuContainer,
-    'stages-editor': StagesEditor
+    'stages-editor': StagesEditor,
+    'stages-new-post': StagesNewPost
   },
   mounted() {
     this.refreshWinSize()
@@ -252,8 +263,16 @@ export default {
       const originalDataFilter = this.output.pageContents.filter(el => el.postId === newDataId)
 
       if (!originalDataFilter.length) {
-        console.log('New data')
+        this.updateList.push({
+          'postId': newDataId,
+          newData,
+          originalData: null,
+          editedKeys: ['stageName', 'stageDescription', 'location', 'yearGroup', 'stageDate', 'mediaData']
+        })
+        this.updateListTrigger.success = true
+        return
       }
+
       const originalData = originalDataFilter[0]
 
       const editedKeys = this.postDifference(newData, originalData)
@@ -353,6 +372,18 @@ export default {
           disabled: false,
           href: "",
           jumpTargetPageNum: this.constVal.EDITOR
+        })
+      } else if (pos === this.constVal.NEWPOST){
+        this.selectedYear = 0
+        while(this.breadCrumbItems.length > this.constVal.TOP+1){
+          this.breadCrumbItems.pop()
+        }
+
+        this.breadCrumbItems.push({
+          text: "新規投稿",
+          disabled: false,
+          href: "",
+          jumpTargetPageNum: this.constVal.NEWPOST
         })
       }
     },
