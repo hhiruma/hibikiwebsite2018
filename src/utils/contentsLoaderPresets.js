@@ -18,11 +18,11 @@ export default {
     path: 'Settings/Users',
     fields: ['masterUserId']
   },
-  bgUrl: {
-    name: 'bgUrl',
+  topPageData: {
+    name: 'topPageData',
     type: 'firestore',
     whichPath: 'doc',
-    path: 'Contents/Main/background/image_paths'
+    path: 'Contents/Main'
   },
   otherImagePaths: {
     name: 'otherImagePaths',

@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-flex id="app">
-      <menu-bar v-if="!loader.isLoading"/>
+      <menu-bar v-if="!loader.isLoading && $route.params.pageSlug !== 'top'"/>
       <router-view v-if="!loader.isLoading"/>
       <transition ref="transition"> {{ transition }} </transition>
       <loading-cover v-if="loader.isLoading"/>

@@ -1,106 +1,46 @@
 <template>
-  <v-container fluid id="bgContainer">
-    <v-layout row>
-      <v-flex xs6 style="height: 100vh">
-        <v-layout column wrap>
-          <v-img id="bgLImg1"
-                 :src="bgUrl.left"
-                 x12 style="height: 75vh;"/>
-          <v-img id="bgLImg2" :src="bgUrlNext.left"/>
-
-          <v-flex x12 style="height: 25vh;">
-          </v-flex>
+  <v-layout style="height: 70vh">
+    <v-window
+      :value="carouselState"
+      max style="width: 100%">
+      <v-window-item v-for="path in bgPaths" :key="path"
+                     style="height: 70vh">
+        <v-layout fill-height>
+          <v-img :src='path'/>
         </v-layout>
-      </v-flex>
-
-      <v-img id="bgRImg1"
-             :src="bgUrl.right"
-             xs6 style="height: 100vh"/>
-      <v-img id="bgRImg2" :src="bgUrlNext.right"/>
-    </v-layout>
-  </v-container>
+      </v-window-item>
+    </v-window>
+  </v-layout>
 </template>
 
 <script>
-import { contentsLoader, loaderPresets } from '@/utils'
+  //<v-layout :style="'height: ' + (windowSize.y-48) + 'px'">
 import anime from 'animejs'
 
 export default {
   name: 'Background',
+  props: ['bgPaths'],
   data() {
     return {
-      bgUrl: {
-        left: "",
-        right: ""
-      },
-      bgUrlNext: {
-        left: "",
-        right: ""
-      },
+      windowSize: { x: 0, y: 0 },
+      bgCounter: 0,
       urlIndex: 0,
-      loader: {
-        isLoading: true,
-        targetParams: []
-      },
-      output: {}
+    }
+  },
+  mounted() {
+    this.refreshWinSize()
+  },
+  computed: {
+    carouselState() {
+      return this.bgCounter % this.bgPaths.length
     }
   },
   methods: {
-    async nextBg() {
-      this.animCompL = false
-      this.animCompR = false
-
-      let bgLImg1 = document.getElementById('bgLImg1')
-      let bgLImg2 = document.getElementById('bgLImg2')
-      const w_bgLImg1 = bgLImg1.getBoundingClientRect().width
-      const h_bgLImg1 = bgLImg1.getBoundingClientRect().height
-      let bgRImg1 = document.getElementById('bgRImg1')
-      let bgRImg2 = document.getElementById('bgRImg2')
-      const w_bgRImg1 = bgRImg1.getBoundingClientRect().width
-      const h_bgRImg1 = bgRImg1.getBoundingClientRect().height
-
-      bgLImg2.style.width  = w_bgLImg1 + "px"
-      bgLImg2.style.height = h_bgLImg1 + "px"
-      bgLImg2.style.top = 0
-      bgLImg2.style.left = "-" + (w_bgLImg1*0.2) + "px"
-      bgLImg2.style.opacity = 0
-
-      bgRImg2.style.width  = w_bgRImg1 + "px"
-      bgRImg2.style.height = h_bgRImg1 + "px"
-      bgRImg2.style.top = (h_bgRImg1*0.2) + "px"
-      bgRImg2.style.left = w_bgLImg1 + "px"
-      bgRImg2.style.opacity = 0
-
-      let animL = anime({
-        targets: '#bgLImg2',
-        translateX: w_bgLImg1*0.2,
-        duration: 1000,
-        opacity: 1,
-        autoplay: false,
-        easing: 'easeOutCubic'
-      })
-      let animR = anime({
-        targets: '#bgRImg2',
-        translateY: -h_bgRImg1*0.2,
-        duration: 1000,
-        opacity: 1,
-        autoplay: false,
-        easing: 'easeOutCubic'
-      })
-
-      animL.play()
-      animR.play()
-
-      animL.finished.then(()=>{
-        this.bgUrl.left = this.output.bgUrl[this.urlIndex][0]
-        this.bgUrl.right = this.output.bgUrl[this.urlIndex][1]
-        animL.restart()
-        animL.pause()
-        animR.restart()
-        animR.pause()
-
-        this.updateUrlIndex()
-      })
+    refreshWinSize(){
+      this.windowSize =  { x: window.innerWidth, y: window.innerHeight }
+    },
+    updateBg() {
+      this.bgCounter += 1
     },
     updateUrlIndex(){
       this.urlIndex += 1
@@ -112,15 +52,9 @@ export default {
     }
   },
   async created() {
-    contentsLoader.addLoadTarget(this.loader, loaderPresets.bgUrl)
-    this.output = await contentsLoader.startLoading(this.loader)
-
-    this.bgUrl.left = this.output.bgUrl[0][0]
-    this.bgUrl.right= this.output.bgUrl[0][1]
-
-    this.updateUrlIndex()
-
-    setInterval(()=>{this.nextBg()}, 5000)
+    setInterval(()=>{
+      this.bgCounter += 1
+    }, 5000)
   }
 }
 </script>
