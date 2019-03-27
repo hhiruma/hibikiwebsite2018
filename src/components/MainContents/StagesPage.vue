@@ -59,7 +59,7 @@
 
     <template v-else>
       <!-- background -->
-      <v-layout :style="'position: absolute; width: 100%; top: 0;' +
+      <v-layout :style="'position: fixed; width: 100%; bottom: 0;' +
                         'height: ' + (windowSize.y - 48) + 'px'">
         <v-img src="https://pbs.twimg.com/media/DuXmJyjVsAI1MYY.jpg:large">
           <v-flex style="height: 100vh; width: 100%;  background: rgba(0, 0, 0, 0.5)"/>

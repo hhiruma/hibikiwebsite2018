@@ -13,25 +13,6 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <!--
-        <v-flex v-if="output.nextStageDetail.hasNextStage">
-          <h1>次の舞台</h1>
-          <v-layout justify-end>
-            <v-flex xs11 >
-              <h2> {{ nextStageDetail.name }} </h2>
-              <v-flex>
-                {{ nextStageDetail.description }}
-              </v-flex>
-              <v-flex>
-                【日時】{{ nextStageDetail.location }}
-              </v-flex>
-              <v-flex>
-                【場所】{{ nextStageDetail.date }}
-              </v-flex>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        -->
       </v-layout>
     </v-flex>
     <v-img xs6 src="https://pbs.twimg.com/media/DsfLiSfVYAAuZa4.jpg:large"/>
@@ -73,7 +54,6 @@
 <script>
 export default {
   name: 'StagesTop',
-  //props: ['stagesDetails', 'nextStageDetail', 'mStageDetails']
   props: ['stagesDetails', 'mStageDetails']
 }
 </script>
