@@ -55,5 +55,6 @@ export default {
 
 <style scoped>
 #MB_container {
+  z-index: 100;
 }
 </style>
