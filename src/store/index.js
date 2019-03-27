@@ -17,9 +17,13 @@ export default new Vuex.Store({
         appSize: {
             appWidth: -1,
             appHeight: -1
-        }
+        },
+        newComersPublicity: false
     },
     mutations: {
+        setNewComersPublicity (state, publicity) {
+          state.newComesPublicity = publicity
+        },
         setEditMode (state, isEditMode) {
           state.editMode = isEditMode
           console.log(state.editMode)

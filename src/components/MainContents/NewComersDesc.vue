@@ -70,6 +70,11 @@
           </v-layout>
         </v-flex>
       </v-layout>
+      <v-flex>
+        <v-checkbox
+          v-model="mSettings.publish"
+          label="ページを公開"/>
+      </v-flex>
     </template>
 
     <v-divider/>
@@ -390,7 +395,7 @@ export default {
 
 <style>
 #NewComersDesc {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.8);
   overflow: scroll;
 }
 

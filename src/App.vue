@@ -76,10 +76,12 @@ export default {
     store.commit('goToTop')
     contentsLoader.addLoadTarget(this.loader, loaderPresets.pageSettings)
     contentsLoader.addLoadTarget(this.loader, loaderPresets.masterUserId)
+    contentsLoader.addLoadTarget(this.loader, loaderPresets.newComersSettings)
 
     this.output = await contentsLoader.startLoading(this.loader)
 
     store.commit('setCurrentUserId')
+    store.commit('setNewComersPublicity', this.output.newComersSettings.publish)
 
     window.addEventListener('resize', () => {
       store.commit('setResizeVals', {mode: 'width', val: window.innerWidth})

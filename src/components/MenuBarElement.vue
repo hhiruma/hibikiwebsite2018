@@ -1,9 +1,9 @@
 <template>
   <v-btn flat v-if="pageData.slug === currentPageSlug">
-      {{ pageData.title }}
+    {{ pageData.title }}
   </v-btn>
   <v-btn flat v-else @click="changePage(pageData.slug)">
-      {{ pageData.title }}
+    {{ pageData.title }}
   </v-btn>
 </template>
 

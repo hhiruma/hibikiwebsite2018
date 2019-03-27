@@ -2,7 +2,10 @@
   <v-toolbar dense id="MB_container">
     <v-toolbar-side-icon></v-toolbar-side-icon>
     <v-toolbar-items>
-      <menu-bar-element v-for="page in pageList" :pageData="page" :key="page.slug"/>
+      <menu-bar-element v-for="page in pageList" :pageData="page" :key="page.slug"
+        v-if="!(page.slug === 'new-comers'
+                  && !$store.state.newComersPublicity
+                  && !$store.state.editMode)"/>
     </v-toolbar-items>
     <v-spacer></v-spacer>
     <v-toolbar-items v-if="isMasterUser">
