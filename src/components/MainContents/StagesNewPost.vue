@@ -202,8 +202,13 @@
 
 
 <script>
+import ImageUploaderNew from '@/utils/imageUploaderNew'
+
 export default {
   name: 'StagesNewPost',
+  components: {
+    'image-uploader-new': ImageUploaderNew
+  },
   data() {
     return {
       mPostContent: {
@@ -276,8 +281,6 @@ export default {
         "delete": false
       })
     }
-  },
-  create() {
   }
 }
 </script>
