@@ -1,88 +1,149 @@
 <template>
-  <v-container fluid style="padding: 0">
-    <!-- background -->
-    <v-layout style="position: fixed; width: 100%; height: 100vh; top: 0; z-index: -1;">
-      <v-img src="https://pbs.twimg.com/media/DuXmJyjVsAI1MYY.jpg:large">
-        <v-flex style="height: 100vh; width: 100%;  background: rgba(0, 0, 0, 0.5)"/>
-      </v-img>
-    </v-layout>
+  <v-container fluid style="padding: 0; position: relative">
+    <!-- slide -->
+    <v-flex id="menuSlide1"
+            :style="'background: rgba(255, 255, 255, 0.8);'+
+                    'position: absolute; top: 0;'+
+                    'left:   '+ -(windowSize.x/5) + 'px;' +
+                    'height: '+ (windowSize.y-48) + 'px;' +
+                    'width:  '+ (windowSize.x/5)  + 'px;'">
+    </v-flex>
+    <v-flex id="menuSlide2"
+            :style="'background: rgba(255, 255, 255, 0.8);' +
+                    'position: absolute; top: 0;'+
+                    'left:   '+ -(windowSize.x*4/5)  +'px;' +
+                    'height: '+ (windowSize.y-48) + 'px;' +
+                    'width:  '+ (windowSize.x*4/5)+ 'px;'">
+    </v-flex>
 
-
-    <v-layout id="StagesContainer" :style="'min-height: '+ (windowSize.y-48)+'px'"
-              justify-space-around align-content-space-around>
-      <template v-if="!loader.isLoading">
-
-        <stages-menu-container
-          :yearGroups="output.yearGroups"
-          :constVal="constVal"
-          :selectedYear="selectedYear"
-          @moveToPage="moveToPage"
+    <template v-if="bgVideoMode">
+      <!-- backgroun video -->
+      <v-layout :style="'height: '+ (windowSize.y-48)+'px; position: relative'">
+        <video
+          id="stagesBgVideo"
+          :style="'position: absolute; z-index: -1;' +
+                  'width : ' + (videoSizeData).width  + 'px;' +
+                  'height: ' + (videoSizeData).height + 'px;'  +
+                  'left:   ' + -(videoSizeData).xDiff + 'px;' +
+                  'top:    ' + -(videoSizeData).yDiff + 'px'"
+          autoplay
+          src="https://firebasestorage.googleapis.com/v0/b/hibikiwebsite2018.appspot.com/o/videos%2FHP%E7%94%A8.mp4?alt=media&token=9616d3ec-c02b-47a5-ab07-2913675e9b02"
         />
 
-        <!-- Main Contents -->
-        <v-flex xs10 id="StagesMenuContent" style="background: rgba(255, 255, 255, 0.8)">
-          <!-- Breadcrumbs -->
-          <v-flex id="StagesMenuContentHeader">
-            <v-breadcrumbs :items="breadCrumbItems" divider=">" style="padding: 0">
-              <template slot="item" slot-scope="props">
-                <v-btn flat small @click="moveToPage(props.item.jumpTargetPageNum, props.item.text)">{{ props.item.text }}</v-btn>
-              </template>
-              <v-icon slot="divider">chevron_right</v-icon>
-            </v-breadcrumbs>
+        <!-- button Menu -->
+        <v-btn @click="slideIn"
+               style="position: absolute; top: 0; left: 0;"
+               color="white" large outline>
+          MENU
+        </v-btn>
 
-            <v-divider/>
-          </v-flex>
-
-          <!-- TOP -->
-          <template v-if="pagePos === constVal.TOP">
-            <stages-top
-             :stagesDetails="output.stagesDetails"
-             :mStageDetails="mStageDetails"/>
-          </template>
+        <v-btn v-if="bgVideoState == 'ended'"
+               @click="bgVideoReplay"
+               style="position: absolute; top: 0; right: 0"
+               color="white" large flat>
+          <v-icon>replay</v-icon> REPLAY
+        </v-btn>
 
 
-          <!-- MENU -->
-          <template v-else-if="pagePos === constVal.MENU">
-            <stages-menu
-              :constVal="constVal"
-              :pageContents="output.pageContents"
-              :selectedYear="selectedYear"
-              @moveToPage="moveToPage"
+        <!-- Cover -->
+        <v-flex :style="'background: rgba(0, 0, 0, 0.4); width: 100%; height: ' + (windowSize.y-48)+'px;'">
+          <v-layout fill-height justify-center align-center column>
+            <img
+              src="https://firebasestorage.googleapis.com/v0/b/hibikiwebsite2018.appspot.com/o/images%2Fstages%2Flogo.png?alt=media&token=09a2cb16-b83e-49c5-aa2f-74c5ca44dc87"
             />
-          </template>
-
-
-          <!-- CONTENT -->
-          <template v-else-if="pagePos === constVal.CONTENT">
-            <stages-content
-              :pageContents="output.pageContents"
-              :updateList="updateList"
-              @addToUpdateList="addToUpdateList"
-            />
-          </template>
-
-          <!-- EDITOR -->
-          <template v-else-if="pagePos === constVal.EDITOR">
-            <stages-editor
-              v-if="$store.state.editMode"
-              :updateList="updateList"
-              :updateButtonLabel="updateButtonLabel"
-              @updateData="updateData"
-              @deleteFromUpdateList="deleteFromUpdateList"
-            />
-          </template>
-
-          <!-- NEWPOST -->
-          <template v-else-if="pagePos === constVal.NEWPOST">
-            <stages-new-post
-              v-if="$store.state.editMode"
-              @addToUpdateList="addToUpdateList"
-            />
-          </template>
-
+          </v-layout>
         </v-flex>
-      </template>
-    </v-layout>
+      </v-layout>
+
+    </template>
+
+    <template v-else>
+      <!-- background -->
+      <v-layout :style="'position: absolute; width: 100%; top: 0;' +
+                        'height: ' + (windowSize.y - 48) + 'px'">
+        <v-img src="https://pbs.twimg.com/media/DuXmJyjVsAI1MYY.jpg:large">
+          <v-flex style="height: 100vh; width: 100%;  background: rgba(0, 0, 0, 0.5)"/>
+        </v-img>
+      </v-layout>
+
+
+      <v-layout id="StagesContainer" :style="'transform: translateX(0); min-height: '+ (windowSize.y-48)+'px'"
+                justify-space-around align-content-space-around>
+        <template v-if="!loader.isLoading">
+
+          <stages-menu-container
+            :yearGroups="output.yearGroups"
+            :constVal="constVal"
+            :selectedYear="selectedYear"
+            @moveToPage="moveToPage"
+            @slideOut="slideOut"
+          />
+
+          <!-- Main Contents -->
+          <v-flex xs10 id="StagesMenuContent" style="background: rgba(255, 255, 255, 0.8)">
+            <!-- Breadcrumbs -->
+            <v-flex id="StagesMenuContentHeader">
+              <v-breadcrumbs :items="breadCrumbItems" divider=">" style="padding: 0">
+                <template slot="item" slot-scope="props">
+                  <v-btn flat small @click="moveToPage(props.item.jumpTargetPageNum, props.item.text)">{{ props.item.text }}</v-btn>
+                </template>
+                <v-icon slot="divider">chevron_right</v-icon>
+              </v-breadcrumbs>
+
+              <v-divider/>
+            </v-flex>
+
+            <!-- TOP -->
+            <template v-if="pagePos === constVal.TOP">
+              <stages-top
+              :stagesDetails="output.stagesDetails"
+              :mStageDetails="mStageDetails"/>
+            </template>
+
+
+            <!-- MENU -->
+            <template v-else-if="pagePos === constVal.MENU">
+              <stages-menu
+                :constVal="constVal"
+                :pageContents="output.pageContents"
+                :selectedYear="selectedYear"
+                @moveToPage="moveToPage"
+              />
+            </template>
+
+
+            <!-- CONTENT -->
+            <template v-else-if="pagePos === constVal.CONTENT">
+              <stages-content
+                :pageContents="output.pageContents"
+                :updateList="updateList"
+                @addToUpdateList="addToUpdateList"
+              />
+            </template>
+
+            <!-- EDITOR -->
+            <template v-else-if="pagePos === constVal.EDITOR">
+              <stages-editor
+                v-if="$store.state.editMode"
+                :updateList="updateList"
+                :updateButtonLabel="updateButtonLabel"
+                @updateData="updateData"
+                @deleteFromUpdateList="deleteFromUpdateList"
+              />
+            </template>
+
+            <!-- NEWPOST -->
+            <template v-else-if="pagePos === constVal.NEWPOST">
+              <stages-new-post
+                v-if="$store.state.editMode"
+                @addToUpdateList="addToUpdateList"
+              />
+            </template>
+
+          </v-flex>
+        </template>
+      </v-layout>
+    </template>
 
     <!-- Message snackbar -->
     <v-snackbar
@@ -126,6 +187,7 @@
 <script>
 import firestore from '@/firebase_firestore'
 import storage from '@/firebase_storage'
+import anime from 'animejs'
 import { mapState } from 'vuex'
 import { contentsLoader, loaderPresets } from '@/utils'
 import StagesTop from '@/components/MainContents/StagesTop'
@@ -175,6 +237,8 @@ export default {
         'failed': false
       },
       updateButtonLabel: "更新する",
+      bgVideoMode: true,
+      bgVideoState: "",
       output: {} //expect 'stageDetails', 'pageContents', 'yearGroups'
     }
   },
@@ -193,6 +257,35 @@ export default {
     contentSelectedYear() {
       return this.output.pageContents.filter(el => el.yearGroup === this.selectedYear)
     },
+    videoSizeData() {
+      let res = {}
+      let areaWidth = this.windowSize.x
+      let areaHeight = this.windowSize.y - 48
+
+      let areaRatio = areaWidth / areaHeight
+
+      if (areaRatio > 1.778) {
+        let idealHeightFromWidth = areaWidth / 1.778
+        let diff = idealHeightFromWidth - areaHeight
+        res = {
+          width  : areaWidth,
+          height : idealHeightFromWidth,
+          xDiff  : 0,
+          yDiff  : diff
+        }
+      } else if (areaRatio < 1.778){
+        let idealWidthFromHeight = areaHeight * 1.778
+        let diff = idealWidthFromHeight - areaWidth
+        res = {
+          width  : idealWidthFromHeight,
+          height : areaHeight,
+          xDiff  : diff,
+          yDiff  : 0
+        }
+      }
+
+      return res
+    }
   },
   methods: {
     formatDate(stageDate) {
@@ -419,7 +512,71 @@ export default {
       this.output.pageContents.map((el) => {
         el['isSelected'] = false
       })
-    }
+    },
+    bgVideoReplay() {
+      const bgVideoDOM = document.getElementById('stagesBgVideo')
+      this.bgVideoState = "playing"
+      bgVideoDOM.currentTime = 0
+      bgVideoDOM.play()
+    },
+    async slideIn() {
+      let timeline = anime.timeline()
+
+      timeline
+        .add({
+          targets: '#menuSlide1',
+          translateX: this.windowSize.x/5,
+          duration: 1000,
+          autoplay: false,
+          easing: 'easeOutQuint',
+          offset: 0
+        })
+        .add({
+          targets: '#menuSlide2',
+          translateX: this.windowSize.x,
+          duration: 1000,
+          autoplay: false,
+          easing: 'easeOutQuint',
+          offset: 200
+        })
+      timeline.play()
+
+      return timeline.finished.then(() => {
+        return new Promise((resolve, reject) => {
+          this.bgVideoMode = false
+          resolve()
+        })
+      })
+    },
+    async slideOut() {
+      let timeline = anime.timeline()
+      this.bgVideoMode = true
+
+      timeline
+        .add({
+          targets: '#menuSlide1',
+          translateX: -this.windowSize.x/5,
+          duration: 1000,
+          autoplay: false,
+          easing: 'easeOutQuint',
+          offset: 200
+        })
+        .add({
+          targets: '#menuSlide2',
+          translateX: -this.windowSize.x,
+          duration: 1000,
+          autoplay: false,
+          easing: 'easeOutQuint',
+          offset: 0
+        })
+
+      timeline.play()
+      return timeline.finished.then(() => {
+        return new Promise((resolve, reject) => {
+          resolve()
+        })
+      })
+    },
   },
   async created() {
     contentsLoader.addLoadTarget(this.loader, loaderPresets.stageDetails)
@@ -437,6 +594,12 @@ export default {
       'title': '舞台について',
       'content': this.output.stagesDetails
     }
+
+    const bgVideoDOM = document.getElementById('stagesBgVideo')
+    this.bgVideoState = "playing"
+    bgVideoDOM.addEventListener("ended", () => {
+      this.bgVideoState = "ended"
+    })
   }
 }
 </script>

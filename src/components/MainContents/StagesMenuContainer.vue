@@ -2,7 +2,13 @@
   <!-- Menu -->
   <v-flex xs2 id="StagesMenuContainer">
     <v-navigation-drawer permanent aboslute dense style="background: rgba(255, 255, 255, 0.8)">
-      <v-subheader>MENU</v-subheader>
+      <v-layout row>
+        <v-subheader>MENU</v-subheader>
+        <v-spacer/>
+        <v-btn flat icon @click="$emit('slideOut')">
+          <v-icon>close</v-icon>
+        </v-btn>
+      </v-layout>
       <v-divider/>
       <v-list-tile @click="moveToPage(constVal.TOP)" class="StagesMenuEl">
         <v-list-tile-avatar>
