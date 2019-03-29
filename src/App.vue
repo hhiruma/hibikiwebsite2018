@@ -1,10 +1,16 @@
 <template>
   <v-app>
     <v-flex id="app">
-      <menu-bar v-if="!loader.isLoading && $route.params.pageSlug !== 'top'"/>
-      <router-view v-if="!loader.isLoading"/>
-      <transition ref="transition"> {{ transition }} </transition>
-      <loading-cover v-if="loader.isLoading"/>
+      <template v-if="$store.state.userAgent === 'pc'">
+        <menu-bar v-if="!loader.isLoading && $route.params.pageSlug !== 'top'"/>
+        <router-view v-if="!loader.isLoading"/>
+        <transition ref="transition"> {{ transition }} </transition>
+        <loading-cover v-if="loader.isLoading"/>
+      </template>
+
+      <template v-else>
+        hi
+      </template>
     </v-flex>
   </v-app>
 </template>
@@ -26,7 +32,6 @@ export default {
   router,
   data() {
     return {
-      img_src: require('@/img/bg.jpg'),
       isMounted: false,
       loader: {
         isLoading: true,
@@ -73,6 +78,12 @@ export default {
     }
   },
   async created() {
+    if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0 || navigator.userAgent.indexOf('Android') > 0) {
+      store.commit('setUserAgent', 'mobile')
+    } else {
+      store.commit('setUserAgent', 'pc')
+    }
+
     store.commit('goToTop')
     contentsLoader.addLoadTarget(this.loader, loaderPresets.pageSettings)
     contentsLoader.addLoadTarget(this.loader, loaderPresets.masterUserId)

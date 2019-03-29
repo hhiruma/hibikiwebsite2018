@@ -18,9 +18,13 @@ export default new Vuex.Store({
             appWidth: -1,
             appHeight: -1
         },
-        newComersPublicity: false
+        newComersPublicity: false,
+        userAgent: ''
     },
     mutations: {
+        setUserAgent (state, userAgent) {
+          state.userAgent = userAgent
+        },
         setNewComersPublicity (state, publicity) {
           state.newComesPublicity = publicity
         },
