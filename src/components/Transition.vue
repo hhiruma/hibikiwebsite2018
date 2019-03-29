@@ -1,10 +1,18 @@
 <template>
   <div id="transContainer" v-if="!loader.isLoading"
                            :class="{transFront: transFront, transBack: !transFront}">
-    <v-flex id="transCover"
-      :style="'background-image: url(' + output.otherImagePaths.translationBg1 +')'"/>
-    <v-flex id="transCover2"
-      :style="'background-image: url(' + output.otherImagePaths.translationBg2 +')'"/>
+    <v-flex id="transCover" style="background: #A52A2A"/>
+    <v-flex id="transCover2" style="background: #FFFFEE">
+      <v-layout fill-height justify-end align-end column>
+        <v-img
+          width=150
+          height=150
+          contain
+          src="https://firebasestorage.googleapis.com/v0/b/hibikiwebsite2018.appspot.com/o/images%2Ftranslation%2F%E9%AD%81%E9%9F%BF%E3%83%AD%E3%82%B3%E3%82%99%E9%BB%92.png?alt=media&token=f60ce322-5111-4ea8-b709-6356d8f6cea5"
+          style="position: absolute; bottom: 50px; right: 50px;"
+        />
+      </v-layout>
+    </v-flex>
   </div>
 </template>
 
@@ -152,7 +160,7 @@ export default {
     }
   },
   async created() {
-    contentsLoader.addLoadTarget(this.loader, loaderPresets.otherImagePaths)
+    //contentsLoader.addLoadTarget(this.loader, loaderPresets.otherImagePaths)
 
     this.output = await contentsLoader.startLoading(this.loader)
   }
@@ -171,7 +179,7 @@ export default {
   z-index: 10000;
 }
 .transBack{
-  z-index: -1;
+  z-index: 10000;
 }
 
 #transCover {

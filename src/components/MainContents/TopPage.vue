@@ -93,10 +93,8 @@ export default {
         }))
       })
       .then(() => {
-        this.$store.commit('setTransitionState', 'out')
+        //this.$store.commit('setTransitionState', 'out')
       })
-
-
   },
   components: {
     'background': Background,
