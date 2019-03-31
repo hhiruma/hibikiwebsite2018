@@ -1,10 +1,18 @@
 <template>
   <v-app>
     <v-flex id="app">
-      <menu-bar v-if="!loader.isLoading && $route.params.pageSlug !== 'top'"/>
-      <router-view v-if="!loader.isLoading"/>
-      <transition ref="transition"> {{ transition }} </transition>
-      <loading-cover v-if="loader.isLoading"/>
+      <template v-if="$store.state.userAgent === 'pc'">
+        <menu-bar v-if="!loader.isLoading && $route.params.pageSlug !== 'top'"/>
+        <router-view v-if="!loader.isLoading"/>
+        <transition ref="transition"> {{ transition }} </transition>
+        <loading-cover v-if="loader.isLoading"/>
+      </template>
+
+      <template v-else>
+        <menu-bar-sp v-if="$route.params.pageSlug !== 'top'"/>
+        <router-view/>
+        <side-bar-sp/>
+      </template>
     </v-flex>
   </v-app>
 </template>
@@ -13,6 +21,8 @@
 import Background from '@/components/Background'
 import Transition from '@/components/Transition'
 import MenuBar from '@/components/MenuBar'
+import MenuBarSp from '@/components/MenuBarSp'
+import SideBarSp from '@/components/SideBarSp'
 import firebase from 'firebase'
 import store from '@/store'
 import router from '@/router'
@@ -26,7 +36,6 @@ export default {
   router,
   data() {
     return {
-      img_src: require('@/img/bg.jpg'),
       isMounted: false,
       loader: {
         isLoading: true,
@@ -73,6 +82,15 @@ export default {
     }
   },
   async created() {
+    if ((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0 || navigator.userAgent.indexOf('Android') > 0) {
+      store.commit('setUserAgent', 'mobile')
+    } else {
+      store.commit('setUserAgent', 'pc')
+      let domElement = document.querySelector('html, body')
+      domElement.style['min-width'] = '910px'
+      domElement.style['min-height'] = '500px'
+    }
+
     store.commit('goToTop')
     contentsLoader.addLoadTarget(this.loader, loaderPresets.pageSettings)
     contentsLoader.addLoadTarget(this.loader, loaderPresets.masterUserId)
@@ -91,6 +109,8 @@ export default {
   components: {
     'background': Background,
     'menu-bar': MenuBar,
+    'menu-bar-sp': MenuBarSp,
+    'side-bar-sp': SideBarSp,
     'loading-cover': LoadingCover,
     'transition': Transition
   }
@@ -102,9 +122,6 @@ html, body {
   width: 100%;
   height: 100%;
   margin: 0px;
-
-  min-width: 910px;
-  min-height: 500px;
 }
 
 #app {

@@ -24,6 +24,18 @@ export default {
     whichPath: 'doc',
     path: 'Contents/Main'
   },
+  spTopPageContents: {
+    name: 'spTopPageContents',
+    type: 'firestore',
+    whichPath: 'collection',
+    path: 'Contents/Main/spContents',
+    options: {
+      order: {
+        field: 'order',
+        direction: 'asc'
+      }
+    }
+  },
   otherImagePaths: {
     name: 'otherImagePaths',
     type: 'firestore',
