@@ -18,6 +18,7 @@ import AboutUsPageSp from '@/components/MainContents/AboutUsPageSp'
 import StagesPage from '@/components/MainContents/StagesPage'
 import StagesPageSp from '@/components/MainContents/StagesPageSp'
 import ContactsPage from '@/components/MainContents/ContactsPage'
+import ContactsPageSp from '@/components/MainContents/ContactsPageSp'
 import NewComersPage from '@/components/MainContents/NewComersPage'
 import NewComersPageSp from '@/components/MainContents/NewComersPageSp'
 
@@ -34,6 +35,7 @@ export default {
     'stages': StagesPage,
     'stages-sp': StagesPageSp,
     'contact': ContactsPage,
+    'contact-sp': ContactsPageSp,
     'new-comers': NewComersPage,
     'new-comers-sp': NewComersPageSp
   }
