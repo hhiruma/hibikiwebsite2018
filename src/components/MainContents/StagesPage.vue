@@ -27,7 +27,7 @@
                   'left:   ' + -(videoSizeData).xDiff + 'px;' +
                   'top:    ' + -(videoSizeData).yDiff + 'px'"
           autoplay
-          src="https://firebasestorage.googleapis.com/v0/b/hibikiwebsite2018.appspot.com/o/videos%2FHP%E7%94%A8.mp4?alt=media&token=9616d3ec-c02b-47a5-ab07-2913675e9b02"
+          src="https://firebasestorage.googleapis.com/v0/b/hibikiwebsite2018.appspot.com/o/videos%2FHP%E7%94%A8.mp4?alt=media&token=48d701ee-53f7-420d-a330-8d30e0c67810"
         />
 
         <!-- button Menu -->

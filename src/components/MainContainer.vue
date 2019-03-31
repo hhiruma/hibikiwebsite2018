@@ -16,6 +16,7 @@ import TopPageSp from '@/components/MainContents/TopPageSp'
 import AboutUsPage from '@/components/MainContents/AboutUsPage'
 import AboutUsPageSp from '@/components/MainContents/AboutUsPageSp'
 import StagesPage from '@/components/MainContents/StagesPage'
+import StagesPageSp from '@/components/MainContents/StagesPageSp'
 import ContactsPage from '@/components/MainContents/ContactsPage'
 import NewComersPage from '@/components/MainContents/NewComersPage'
 
@@ -30,6 +31,7 @@ export default {
     'about-us': AboutUsPage,
     'about-us-sp': AboutUsPageSp,
     'stages': StagesPage,
+    'stages-sp': StagesPageSp,
     'contact': ContactsPage,
     'new-comers': NewComersPage
   }
