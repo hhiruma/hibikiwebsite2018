@@ -77,15 +77,15 @@
 
         <v-divider/>
 
-        <template v-for="content in output.spTopPageContents">
-          <v-flex
-            class="topPageSpMenuEl bgCoverSettings" :key="content.title"
-            :style="'background-image: url(' + content.bgUrl + ');'">
-            <v-flex class="topPageSpMenuName">
-              {{ content.title }}
-            </v-flex>
+        <v-flex
+          v-for="content in output.spTopPageContents"
+          @click="changePage(content.slug)"
+          class="topPageSpMenuEl bgCoverSettings" :key="content.title"
+          :style="'background-image: url(' + content.bgUrl + ');'">
+          <v-flex class="topPageSpMenuName">
+            {{ content.title }}
           </v-flex>
-        </template>
+        </v-flex>
       </v-list>
 
       <v-flex>
@@ -129,7 +129,8 @@ export default {
   methods: {
     changePage(slug) {
       console.log('slug: ' + slug)
-      this.$store.commit('changePage', slug)
+      this.$store.commit('startTransition', slug)
+      this.$store.commit('changePage')
     }
   },
   async created() {
