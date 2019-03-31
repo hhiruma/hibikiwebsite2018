@@ -9,7 +9,7 @@
       </template>
 
       <template v-else>
-        hi
+        <router-view v-if="!loader.isLoading"/>
       </template>
     </v-flex>
   </v-app>
@@ -82,6 +82,9 @@ export default {
       store.commit('setUserAgent', 'mobile')
     } else {
       store.commit('setUserAgent', 'pc')
+      let domElement = document.querySelector('html, body')
+      domElement.style['min-width'] = '910px'
+      domElement.style['min-height'] = '500px'
     }
 
     store.commit('goToTop')
@@ -113,9 +116,6 @@ html, body {
   width: 100%;
   height: 100%;
   margin: 0px;
-
-  min-width: 910px;
-  min-height: 500px;
 }
 
 #app {

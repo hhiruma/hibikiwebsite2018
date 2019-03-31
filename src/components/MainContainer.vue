@@ -1,12 +1,18 @@
 <template>
   <v-flex v-if="pageShow" id="MC_container">
-    <component :is="$route.params.pageSlug"/>
+    <template v-if="$store.state.userAgent === 'pc'">
+      <component :is="$route.params.pageSlug"/>
+    </template>
+    <template v-else>
+      <component :is="$route.params.pageSlug + '-sp'"/>
+    </template>
   </v-flex>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import TopPage from '@/components/MainContents/TopPage.vue'
+import TopPageSp from '@/components/MainContents/TopPageSp.vue'
 import AboutUsPage from '@/components/MainContents/AboutUsPage'
 import StagesPage from '@/components/MainContents/StagesPage'
 import ContactsPage from '@/components/MainContents/ContactsPage.vue'
@@ -19,6 +25,7 @@ export default {
   }),
   components: {
     'top': TopPage,
+    'top-sp': TopPageSp,
     'about-us': AboutUsPage,
     'stages': StagesPage,
     'contact': ContactsPage,
@@ -30,7 +37,6 @@ export default {
 <style scoped>
 #MC_container {
     box-sizing: border-box;
-    min-height: 500px;
     width: 100%;
 
     transition: all 0.4s ease;
