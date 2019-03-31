@@ -87,6 +87,13 @@ export default {
       drawer: null
     }
   },
+  methods: {
+    changePage(slug) {
+      console.log('slug: ' + slug)
+      this.$store.commit('startTransition', slug)
+      this.$store.commit('changePage')
+    }
+  },
   async created() {
     contentsLoader.addLoadTarget(this.loader, loaderPresets.spTopPageContents)
     contentsLoader.addLoadTarget(this.loader, loaderPresets.newComersSettings)
