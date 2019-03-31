@@ -9,7 +9,9 @@
       </template>
 
       <template v-else>
-        <router-view v-if="!loader.isLoading"/>
+        <menu-bar-sp v-if="$route.params.pageSlug !== 'top'"/>
+        <router-view/>
+        <side-bar-sp/>
       </template>
     </v-flex>
   </v-app>
@@ -19,6 +21,8 @@
 import Background from '@/components/Background'
 import Transition from '@/components/Transition'
 import MenuBar from '@/components/MenuBar'
+import MenuBarSp from '@/components/MenuBarSp'
+import SideBarSp from '@/components/SideBarSp'
 import firebase from 'firebase'
 import store from '@/store'
 import router from '@/router'
@@ -105,6 +109,8 @@ export default {
   components: {
     'background': Background,
     'menu-bar': MenuBar,
+    'menu-bar-sp': MenuBarSp,
+    'side-bar-sp': SideBarSp,
     'loading-cover': LoadingCover,
     'transition': Transition
   }

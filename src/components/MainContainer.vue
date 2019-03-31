@@ -11,12 +11,13 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import TopPage from '@/components/MainContents/TopPage.vue'
-import TopPageSp from '@/components/MainContents/TopPageSp.vue'
+import TopPage from '@/components/MainContents/TopPage'
+import TopPageSp from '@/components/MainContents/TopPageSp'
 import AboutUsPage from '@/components/MainContents/AboutUsPage'
+import AboutUsPageSp from '@/components/MainContents/AboutUsPageSp'
 import StagesPage from '@/components/MainContents/StagesPage'
-import ContactsPage from '@/components/MainContents/ContactsPage.vue'
-import NewComersPage from '@/components/MainContents/NewComersPage.vue'
+import ContactsPage from '@/components/MainContents/ContactsPage'
+import NewComersPage from '@/components/MainContents/NewComersPage'
 
 export default {
   name: 'MainContainer',
@@ -27,6 +28,7 @@ export default {
     'top': TopPage,
     'top-sp': TopPageSp,
     'about-us': AboutUsPage,
+    'about-us-sp': AboutUsPageSp,
     'stages': StagesPage,
     'contact': ContactsPage,
     'new-comers': NewComersPage

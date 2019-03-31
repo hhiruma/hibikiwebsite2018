@@ -19,9 +19,13 @@ export default new Vuex.Store({
             appHeight: -1
         },
         newComersPublicity: false,
-        userAgent: ''
+        userAgent: '',
+        spSideBarDrawer: null
     },
     mutations: {
+        toggleSpSideBarDrawer (state) {
+          state.spSideBarDrawer = !state.spSideBarDrawer
+        },
         setUserAgent (state, userAgent) {
           state.userAgent = userAgent
         },
