@@ -19,6 +19,7 @@ import StagesPage from '@/components/MainContents/StagesPage'
 import StagesPageSp from '@/components/MainContents/StagesPageSp'
 import ContactsPage from '@/components/MainContents/ContactsPage'
 import NewComersPage from '@/components/MainContents/NewComersPage'
+import NewComersPageSp from '@/components/MainContents/NewComersPageSp'
 
 export default {
   name: 'MainContainer',
@@ -33,7 +34,8 @@ export default {
     'stages': StagesPage,
     'stages-sp': StagesPageSp,
     'contact': ContactsPage,
-    'new-comers': NewComersPage
+    'new-comers': NewComersPage,
+    'new-comers-sp': NewComersPageSp
   }
 }
 </script>
